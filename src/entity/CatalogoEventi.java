@@ -1,0 +1,91 @@
+package entity;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.ArrayList;
+
+
+public class CatalogoEventi {
+    private static CatalogoEventi instance;
+    private List<Evento> listaEventi;
+
+
+    private CatalogoEventi(){
+        listaEventi = new ArrayList<>();
+    }
+
+    public static CatalogoEventi getInstance(){
+        if(instance == null){
+            instance = new CatalogoEventi();
+        }
+        return instance;
+    }
+
+
+    public void aggiungiEvento(Evento e){
+        listaEventi.add(e);
+    }
+
+
+
+
+    //PROBLEMATICHE DI ERRORE QUI
+    public List<Evento> getListaEventi(){
+
+        LocalDate dataOdierna = LocalDate.now();
+        List<Evento> eventi = new ArrayList<>();
+        for (int i = 0; i < listaEventi.size(); i++) {
+            if (listaEventi.get(i).getData().isAfter(dataOdierna.minusDays(1))){
+
+                eventi.add(listaEventi.get(i));
+
+            }
+        }
+
+        return eventi;
+    }
+
+    //PROBLEMATICHE DI ERRORE QUI
+    public List<Evento> getEventiOdierni(){
+
+        LocalDate dataOdierna = LocalDate.now();
+        List<Evento> eventiOdierni = new ArrayList<>();
+        for (int i = 0; i < listaEventi.size(); i++) {
+            if (listaEventi.get(i).getData().equals(dataOdierna)){
+
+                eventiOdierni.add(listaEventi.get(i));
+
+            }
+        }
+
+        return eventiOdierni;
+    }
+
+
+    public List<Evento> filtraPerData(LocalDate data){
+
+        List<Evento> eventi = new ArrayList<>();
+        for (int i = 0; i < listaEventi.size(); i++) {
+            if (listaEventi.get(i).getData().equals(data)){
+
+                eventi.add(listaEventi.get(i));
+
+            }
+        }
+
+        return eventi;
+    }
+
+    public List<Evento> filtraPerLuogo(String luogo){
+        List<Evento> eventi = new ArrayList<>();
+        for (int i = 0; i < listaEventi.size(); i++) {
+            if (listaEventi.get(i).getLuogo().equals(luogo)){
+
+                eventi.add(listaEventi.get(i));
+
+            }
+        }
+        return eventi;
+    }
+
+}
