@@ -1,6 +1,6 @@
 package dao;
 
-import com.mysql.cj.protocol.Resultset;
+
 import entity.Biglietto;
 import entity.Evento;
 import entity.ProfiloUtente;
