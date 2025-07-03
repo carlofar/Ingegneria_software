@@ -45,14 +45,19 @@ public class Evento {
     }
 
     public boolean verificaDisponibilita(){
+
         return this.listaBiglietti.size() < maxPartecipanti;
     }
 
     public void aggiungiPartecipante(){
+
         this.numPartecipantiAttuali++;
     }
 
 
+    public void aggiungiBiglietto(Biglietto b){
+        listaBiglietti.add(b);
+    }
 
     //getter & setter
 

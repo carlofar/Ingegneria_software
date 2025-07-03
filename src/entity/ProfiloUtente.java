@@ -1,8 +1,10 @@
 package entity;
 
+import dao.BigliettoDAO;
+
 import java.util.List;
 import java.util.ArrayList;
-
+import java.util.function.UnaryOperator;
 
 
 public class ProfiloUtente {
@@ -20,6 +22,9 @@ public class ProfiloUtente {
     private String immagine;
     private List<Biglietto> biglietti;
     private Ruolo ruolo;
+
+
+    private static BigliettoDAO bigliettoDAO = new BigliettoDAO();
 
 
     //Costruttore
@@ -67,6 +72,16 @@ public class ProfiloUtente {
 
     public int calcolaNumEventiPartecipanti(){
         return biglietti.size();
+    }
+
+    public boolean checkPassword(String password){
+        return this.password.equals(password);
+    }
+
+
+    public List<Biglietto> getBiglietti(){
+        //ottimizzazione
+        return bigliettoDAO.getStoricoBiglietti(this);
     }
 
 

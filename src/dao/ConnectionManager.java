@@ -12,9 +12,9 @@ public class ConnectionManager {
     private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
 
     //Parametri di Connessione al database(Tecnicamente si mettono in un file di comfigurazione esterno, non in chiaro)
-    private static final String URL = "jdbc:mysql://localhost:3306/progettois";
+    private static final String URL = "jdbc:mysql://localhost:3306/derosa_dichiara_farina";
     private static final String USER = "root";
-    private static final String PASSWORD = "prova";
+    private static final String PASSWORD = "ProgettoIS";
 
     //instance rappresenta l'unica istanza della classe secondo il pattern singleton
     private static ConnectionManager instance;

@@ -1,6 +1,7 @@
 package entity;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -35,7 +36,7 @@ public class CatalogoEventi {
         LocalDate dataOdierna = LocalDate.now();
         List<Evento> eventi = new ArrayList<>();
         for (int i = 0; i < listaEventi.size(); i++) {
-            if (listaEventi.get(i).getData().isAfter(dataOdierna.minusDays(1))){
+            if (listaEventi.get(i).getData().after(Date.from(dataOdierna.atStartOfDay(java.time.ZoneId.systemDefault()).toInstant()))){
 
                 eventi.add(listaEventi.get(i));
 
@@ -47,7 +48,7 @@ public class CatalogoEventi {
 
     //PROBLEMATICHE DI ERRORE QUI
     public List<Evento> getEventiOdierni(){
-
+        //List<Evento> eventiOdierni = eventoDAO.getEventi();
         LocalDate dataOdierna = LocalDate.now();
         List<Evento> eventiOdierni = new ArrayList<>();
         for (int i = 0; i < listaEventi.size(); i++) {
@@ -63,7 +64,7 @@ public class CatalogoEventi {
 
 
     public List<Evento> filtraPerData(LocalDate data){
-
+        //List<Evento> eventiOdierni = eventoDAO.getEventi();
         List<Evento> eventi = new ArrayList<>();
         for (int i = 0; i < listaEventi.size(); i++) {
             if (listaEventi.get(i).getData().equals(data)){

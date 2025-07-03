@@ -1,5 +1,7 @@
 package entity;
 
+import dao.UtenteDAO;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -8,6 +10,8 @@ public class CatalogoUtenti {
 
     private static CatalogoUtenti instance;
     private List<ProfiloUtente> listaUtenti;
+
+    private UtenteDAO utenteDAO = new UtenteDAO();
 
     private CatalogoUtenti(){
         listaUtenti = new ArrayList<>();
@@ -23,20 +27,20 @@ public class CatalogoUtenti {
 
     public void aggiungiProfilo(ProfiloUtente p){
         listaUtenti.add(p);
+        utenteDAO.SalvaUtente(p);
     }
+
+
 
     public List<ProfiloUtente> getListaUtenti(){
         return new ArrayList<>(listaUtenti);
     }
 
-    public ProfiloUtente trovaUtenteByEmail(String eMail){
-        for(ProfiloUtente p : listaUtenti){
-            if(p.getEmail().equalsIgnoreCase(eMail)){
-                return p;
-            }
-        }
-            return null; //NO! DEVE LANCIARE UN ECCEZIONE
+    public ProfiloUtente trovaUtenteByEmail(String eMail) {
+        return utenteDAO.trovaUtenteByEmail(eMail);
     }
 
-
+    public boolean ceckUtenteByEmail(String eMail) {
+        return utenteDAO.trovaUtenteByEmail(eMail) != null;
+    }
 }

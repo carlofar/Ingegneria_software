@@ -16,9 +16,6 @@ public class BigliettoDAO {
 
     /*
 
-    public void salvaBiglietto(Biglietto b);
-    !!! public List<Biglietto> getStoricoBiglietti(ProfiloUtente p);
-    public void aggiornaBiglietto( Biglietto b);
      */
 
     public Biglietto trovaBigliettoByCodice(String codice){
@@ -61,8 +58,9 @@ public class BigliettoDAO {
 
     public List<Biglietto> getStoricoBiglietti(ProfiloUtente p){
         List<Biglietto> biglietti = new ArrayList<>();
-        String query = "SELECT B.codiceIdentificativo, B.stato, E.idEvento, E.titolo, E.descrizione, E.data, E.orario, E.luogo" +
-                "FROM BIGLIETTO B, EVENTO E , UTENTEREGISTRATO U WHERE B.utenteEmail= U.email AND U.email= ?";
+        String query = "SELECT B.codiceIdentificativo, B.stato, E.idEvento, E.titolo, E.descrizione, E.data, E.orario, E.luogo " +
+                "FROM BIGLIETTO B JOIN EVENTO E ON B.idEvento = E.idEvento " +
+                "WHERE B.utenteEmail = ?";
         try(Connection conn=ConnectionManager.getInstance().getConn();
         PreparedStatement stmt=conn.prepareStatement(query)){
             stmt.setString(1, p.getEmail());
@@ -78,8 +76,10 @@ public class BigliettoDAO {
                 e.setTitolo(rs.getString("titolo"));
                 e.setDescrizione(rs.getString("descrizione"));
                 e.setData(rs.getDate("data"));
-
-
+                e.setOraInizio(rs.getString("orario"));
+                e.setLuogo(rs.getString("luogo"));
+                b.setEvento(e);
+                biglietti.add(b);
             }
 
         }
@@ -89,5 +89,45 @@ public class BigliettoDAO {
         return biglietti;
     }
 
+
+    public void salvaBiglietto(Biglietto b){
+
+        String query = "INSERT INTO Biglietto(codice, stato, idEvento) VALUES (?,?,?)";
+
+        try(Connection conn = ConnectionManager.getInstance().getConn();
+            PreparedStatement stmt = conn.prepareStatement(query)){
+
+            stmt.setString(1, b.getCodice());
+            stmt.setString(2, b.getStato().name());
+
+            //Supponiamo evento già noto.
+            int eventoId = b.getEvento().getId();
+            stmt.setInt(3, eventoId);
+
+            stmt.executeUpdate();
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+
+    }
+
+
+    public void aggiornaBiglietto( Biglietto b){
+
+        String query = "UPDATE Biglietto SET stato = ? WHERE codice = ?";
+        try(Connection conn=ConnectionManager.getInstance().getConn();
+            PreparedStatement stmt=conn.prepareStatement(query)){
+            stmt.setString(1, b.getStato().name());
+            stmt.setString(2, b.getCodice());
+            stmt.executeUpdate();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+
+
+        }
+    }
 
 }

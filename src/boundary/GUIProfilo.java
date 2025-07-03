@@ -1,16 +1,45 @@
 package boundary;
 
+import controller.ControllerGestioneAutenticazione;
+import controller.ControllerGestioneProfilo;
+import entity.Biglietto;
+import entity.ProfiloUtente;
+
+import java.util.List;
+
+
 public class GUIProfilo {
 
-//    //ApriAccount
-//    //MostraImmagineProfilo
-//    //VisualizzaNumEventi
-//
-//    public void ApriAccount() {
-//
-//    }
-//
-//
+//    //public void apriAccount()
+//    //public void mostraImmagineProfilo()
+//    //public void visualizzaNumEventi()
+
+    private static ControllerGestioneProfilo controllerGestioneProfilo = new ControllerGestioneProfilo();
+    private static ControllerGestioneAutenticazione controllerGestioneAutenticazione = new ControllerGestioneAutenticazione();
+
+
+    public static void main(String[] args) {
+
+
+//        System.out.println(controllerGestioneAutenticazione.RegistraUtente("Gennaro","De Rosa","gennaro.derosa10@studenti.unina.it","GennaroDR3"));
+//        ProfiloUtente p = controllerGestoneProfilo.getAccount("gennaro.derosa10@studenti.unina.it");
+//        System.out.println(p.toString());
+
+//        ProfiloUtente p = controllerGestioneAutenticazione.login("gennaro.derosa10@studenti.unina.it","GennaroDR3");
+
+        GUIProfilo.apriAccount("gennaro.derosa10@studenti.unina.it");
+
+    }
+
+    public static void apriAccount(String eMail) {
+
+        ProfiloUtente p = controllerGestioneProfilo.getAccount(eMail);
+        List<Biglietto> biglietto = controllerGestioneProfilo.getStoricoBiglietti(p);
+        controllerGestioneProfilo.mostraDati(p, biglietto);
+
+    }
+
+
 
 
 
