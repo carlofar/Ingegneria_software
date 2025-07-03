@@ -78,7 +78,7 @@ public class BigliettoDAO {
                 e.setTitolo(rs.getString("titolo"));
                 e.setDescrizione(rs.getString("descrizione"));
                 e.setData(rs.getDate("data"));
-                
+
 
             }
 
