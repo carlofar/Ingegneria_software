@@ -8,10 +8,12 @@ public class ControllerGestioneProfilo {
     private final BigliettoDAO bigliettoDAO = new BigliettoDAO();
 
     public ProfiloUtente getAccount(String eMail){
+
         return CatalogoUtenti.getInstance().trovaUtenteByEmail(eMail);
     }
 
     public int calcolaNumEventiPartecipati(ProfiloUtente p){
+
         return p.calcolaNumEventiPartecipanti();
     }
 

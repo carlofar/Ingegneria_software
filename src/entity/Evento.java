@@ -1,14 +1,21 @@
 package entity;
 
+import dao.BigliettoDAO;
+import dao.EventoDAO;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Date;
+import java.util.UUID;
 
 public class Evento {
 
-    private static int idCounter = 0;
-    private int id;
+    private static EventoDAO eventoDAO = new EventoDAO();
+    private static BigliettoDAO bigliettoDAO = new BigliettoDAO();
+
+    private String id;
     private String titolo;
     private String descrizione;
     private Date data;
@@ -21,8 +28,7 @@ public class Evento {
 
     //Costruttore
     public Evento(){
-        Evento.idCounter ++;
-        this.id = Evento.idCounter;
+        this.id = "EV-" + UUID.randomUUID().toString().substring(0,3) + "-" + LocalDateTime.now().hashCode();
         this.titolo = null;
         this.descrizione = null;
         this.data = null;
@@ -33,8 +39,7 @@ public class Evento {
 
 
     public Evento(String titolo, String descrizione, Date data, String oraInizio, String luogo, float costo, int maxPartecipanti) {
-        Evento.idCounter ++;
-        this.id = Evento.idCounter;
+        this.id = "EV-" + UUID.randomUUID().toString().substring(0,3) + LocalDateTime.now().hashCode();
         this.titolo = titolo;
         this.descrizione = descrizione;
         this.data = data;
@@ -45,7 +50,9 @@ public class Evento {
     }
 
     public boolean verificaDisponibilita(){
-
+        if (listaBiglietti == null){
+            this.listaBiglietti = eventoDAO.getBigliettiAssociati(this);
+        }
         return this.listaBiglietti.size() < maxPartecipanti;
     }
 
@@ -61,9 +68,14 @@ public class Evento {
 
     //getter & setter
 
-    public int getId() {
+    public String getId() {
         return id;
     }
+
+    public void setId(String id){
+        this.id = id;
+    }
+
 
     public int getNumPartecipantiTotali(){
         return listaBiglietti.size();
@@ -98,6 +110,9 @@ public class Evento {
     }
 
     public List<Biglietto> getListaBiglietti() {
+        if (listaBiglietti == null){
+            return eventoDAO.getBigliettiAssociati(this);
+        }
         return listaBiglietti;
     }
 
@@ -133,11 +148,17 @@ public class Evento {
         this.costo = costo;
     }
 
+    public void setNumPartecipantiAttuali(int numPartecipantiAttuali) {
+        this.numPartecipantiAttuali = numPartecipantiAttuali;
+    }
+
+
     @Override
     public boolean equals(Object o){
         if(this == o) return true;
         if(o == null || this.getClass() != o.getClass()) return false;
         Evento evento = (Evento) o;
+        System.out.println("this:" + this.toString() + "\nother: " + evento.toString());
         return this.titolo.equals(evento.titolo) &&
                 this.data.equals(evento.data) &&
                 this.luogo.equals(evento.luogo);
@@ -156,5 +177,11 @@ public class Evento {
     }
 
 
+    public Biglietto trovaBiglietto(String codice) {
+        return bigliettoDAO.trovaBigliettoByCodice(codice);
+    }
 
+    public void aggiornaEntrataDAO() {
+        eventoDAO.aggiornaEntrata(this);
+    }
 }

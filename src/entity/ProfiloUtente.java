@@ -71,7 +71,17 @@ public class ProfiloUtente {
     }
 
     public int calcolaNumEventiPartecipanti(){
-        return biglietti.size();
+        if(biglietti.isEmpty()){
+            biglietti = bigliettoDAO.getStoricoBiglietti(this);
+        }
+        int numEventi = 0;
+        for (Biglietto biglietto : biglietti) {
+            if (biglietto.getStato() == Biglietto.Stato.CONSUMATO) {
+                numEventi++;
+            }
+        }
+
+        return numEventi;
     }
 
     public boolean checkPassword(String password){

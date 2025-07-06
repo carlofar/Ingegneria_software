@@ -1,12 +1,33 @@
 package dao;
 
+import entity.Biglietto;
 import entity.Evento;
+import entity.ProfiloUtente;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventoDAO {
+/*
+titolo varchar(40)
+descrizione text
+data date
+orario time
+luogo varchar(150)
+costo float
+maxPartecipanti int
+numPartecipantiAttuali int
+
+
+
+ */
+
+
+
+public class EventoDAO{
+
+
+
 
 
 
@@ -21,15 +42,29 @@ public class EventoDAO {
             //EVENTO:TITOLO,DESCRIZIONE,DATA,ORARIO,LUOGO,COSTO,MAXPARTECIPANTI,NUMPARTECIPANTIATTUALI
             //COSTRUTTORE: titolo, descrizione, data, oraInizio, luogo,  maxPartecipanti,  costo
                 while (rs.next()){
-                    Evento e = new Evento(
-                            rs.getString("titolo"),
-                            rs.getString("descrizione"),
-                            rs.getDate("data"),
-                            rs.getString("orario"),
-                            rs.getString("luogo"),
-                            rs.getFloat("costo"),
-                            rs.getInt("maxPartecipanti"));
+                    Evento e = new Evento();
+                    e.setId(rs.getString("idEvento"));
+                    e.setTitolo(rs.getString("titolo"));
+                    e.setDescrizione(rs.getString("descrizione"));
+                    e.setData(rs.getDate("data"));
+                    e.setOraInizio(rs.getString("orario"));
+                    e.setLuogo(rs.getString("luogo"));
+                    e.setCosto(rs.getFloat("costo"));
+                    e.setMaxPartecipanti(rs.getInt("maxPartecipanti"));
+                    e.setNumPartecipantiAttuali(rs.getInt("numPartecipantiAttuali"));
                     eventi.add(e);
+//                    String id = rs.getString("idEvento");
+//                    Evento e = new Evento(
+//                            rs.getString("titolo"),
+//                            rs.getString("descrizione"),
+//                            rs.getDate("data"),
+//                            rs.getString("orario"),
+//                            rs.getString("luogo"),
+//                            rs.getFloat("costo"),
+//                            rs.getInt("maxPartecipanti"));
+//                            rs.getInt("numPartecipantiAttuali");
+//
+//                    eventi.add(e);
                 }
 
         }catch (SQLException e){
@@ -70,7 +105,7 @@ public class EventoDAO {
             PreparedStatement stmt = conn.prepareStatement(query)){
 
             stmt.setInt(1, evento.getNumPartecipantiAttuali());
-            stmt.setInt(2, evento.getId());
+            stmt.setString(2, evento.getId());
 
             stmt.executeUpdate();
 
@@ -141,4 +176,29 @@ public class EventoDAO {
     }
 
 
+    public List<Biglietto> getBigliettiAssociati(Evento evento) {
+        List<Biglietto> biglietti = new ArrayList<>();
+        String query = "SELECT * FROM BIGLIETTO WHERE idEvento = ?";
+        try (Connection conn = ConnectionManager.getInstance().getConn();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, evento.getId());
+            stmt.executeQuery();
+
+            ResultSet rs = stmt.getResultSet();
+            if (rs.next()) {
+                Biglietto b = new Biglietto();
+                b.setCodice(rs.getString("codiceIdentificativo"));
+                b.setStato(Enum.valueOf(Biglietto.Stato.class, rs.getString("stato")));
+                //mancherebbe info sul proprietario
+                b.setEvento(evento);
+                biglietti.add(b);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return biglietti;
+    }
 }

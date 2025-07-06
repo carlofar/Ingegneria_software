@@ -1,8 +1,20 @@
 package entity;
+import dao.BigliettoDAO;
+import dao.EventoDAO;
+
+import java.sql.Date;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Objects;
 
 
 public class  Biglietto {
+
+    private static final BigliettoDAO bigliettoDAO = new BigliettoDAO();
+    private static final EventoDAO eventoDAO = new EventoDAO();
+    public void salvaBigliettoDAO() {
+        bigliettoDAO.salvaBiglietto(this);
+    }
 
     public enum Stato{
         VALIDO,
@@ -46,6 +58,9 @@ public class  Biglietto {
     }
 
     public Evento getEvento() {
+        if(evento == null){
+            bigliettoDAO.associaEvento(this);
+        }
         return evento;
     }
 
@@ -67,14 +82,26 @@ public class  Biglietto {
 
     public boolean verifificaAccesso(Evento e){
 
-        return this.stato == Stato.VALIDO &&
-                this.evento.equals(e) &&
-                this.evento.getData().equals(LocalDate.now());
 
+        LocalDate localDate = LocalDate.now();
+        java.util.Date data = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        System.out.println("Stato: " + this.stato.equals(Stato.VALIDO) + " Evento: " + this.evento.equals(e) + " Data: " + this.evento.getData().equals(data)) ;
+
+        return this.stato.equals(Stato.VALIDO) &&
+                this.evento.equals(e) &&
+                this.evento.getData().equals(data);
     }
 
     public void marcaComeConsumato(){
         this.stato = Stato.CONSUMATO;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Biglietto biglietto = (Biglietto) o;
+        return Objects.equals(codice, biglietto.codice);
     }
 
 
@@ -87,5 +114,11 @@ public class  Biglietto {
                 ", evento=" + evento +
                 '}';
     }
+
+
+    public void aggiornaDAO() {
+        bigliettoDAO.aggiornaBiglietto(this);
+    }
+
 
 }

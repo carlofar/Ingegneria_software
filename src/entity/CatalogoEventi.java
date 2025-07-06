@@ -1,5 +1,7 @@
 package entity;
 
+import dao.EventoDAO;
+
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -10,6 +12,7 @@ public class CatalogoEventi {
     private static CatalogoEventi instance;
     private List<Evento> listaEventi;
 
+    private static EventoDAO eventoDAO = new EventoDAO();
 
     private CatalogoEventi(){
         listaEventi = new ArrayList<>();
@@ -33,10 +36,14 @@ public class CatalogoEventi {
     //PROBLEMATICHE DI ERRORE QUI
     public List<Evento> getListaEventi(){
 
+        if ( listaEventi.isEmpty()){
+            listaEventi = eventoDAO.getEventi();
+            return listaEventi;
+        }
         LocalDate dataOdierna = LocalDate.now();
         List<Evento> eventi = new ArrayList<>();
         for (int i = 0; i < listaEventi.size(); i++) {
-            if (listaEventi.get(i).getData().after(Date.from(dataOdierna.atStartOfDay(java.time.ZoneId.systemDefault()).toInstant()))){
+            if (listaEventi.get(i).getData().after(Date.from(dataOdierna.minusDays(1).atStartOfDay(java.time.ZoneId.systemDefault()).toInstant()))){
 
                 eventi.add(listaEventi.get(i));
 
@@ -48,17 +55,23 @@ public class CatalogoEventi {
 
     //PROBLEMATICHE DI ERRORE QUI
     public List<Evento> getEventiOdierni(){
-        //List<Evento> eventiOdierni = eventoDAO.getEventi();
-        LocalDate dataOdierna = LocalDate.now();
+
+        if ( listaEventi.isEmpty()){
+            listaEventi = eventoDAO.getEventi();
+            return listaEventi;
+        }
+//        Date dataOdierna = Date.from(LocalDate.now().atStartOfDay(java.time.ZoneId.systemDefault()).toInstant());
+//        List<Evento> eventiOdierni = eventoDAO.filtraPerData(dataOdierna);
+//        return eventiOdierni;
+
+        Date dataOdierna = Date.from(LocalDate.now().atStartOfDay(java.time.ZoneId.systemDefault()).toInstant());
         List<Evento> eventiOdierni = new ArrayList<>();
         for (int i = 0; i < listaEventi.size(); i++) {
             if (listaEventi.get(i).getData().equals(dataOdierna)){
-
                 eventiOdierni.add(listaEventi.get(i));
-
             }
         }
-
+//
         return eventiOdierni;
     }
 

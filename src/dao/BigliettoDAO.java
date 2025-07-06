@@ -58,7 +58,7 @@ public class BigliettoDAO {
 
     public List<Biglietto> getStoricoBiglietti(ProfiloUtente p){
         List<Biglietto> biglietti = new ArrayList<>();
-        String query = "SELECT B.codiceIdentificativo, B.stato, E.idEvento, E.titolo, E.descrizione, E.data, E.orario, E.luogo " +
+        String query = "SELECT B.codiceIdentificativo, B.stato, B.utenteEmail, E.idEvento, E.titolo, E.descrizione, E.data, E.orario, E.luogo , E.costo " +
                 "FROM BIGLIETTO B JOIN EVENTO E ON B.idEvento = E.idEvento " +
                 "WHERE B.utenteEmail = ?";
         try(Connection conn=ConnectionManager.getInstance().getConn();
@@ -72,6 +72,7 @@ public class BigliettoDAO {
                 Biglietto b=new Biglietto();
                 b.setCodice(rs.getString("codiceIdentificativo"));
                 b.setStato(Enum.valueOf(Biglietto.Stato.class, rs.getString("stato")));
+                b.setProprietario(p);
                 Evento e = new Evento();
                 e.setTitolo(rs.getString("titolo"));
                 e.setDescrizione(rs.getString("descrizione"));
@@ -92,17 +93,16 @@ public class BigliettoDAO {
 
     public void salvaBiglietto(Biglietto b){
 
-        String query = "INSERT INTO Biglietto(codice, stato, idEvento) VALUES (?,?,?)";
+        String query = "INSERT INTO Biglietto(codiceIdentificativo, stato, utenteEmail, idEvento ) VALUES (?,?,?,?)";
 
         try(Connection conn = ConnectionManager.getInstance().getConn();
             PreparedStatement stmt = conn.prepareStatement(query)){
 
             stmt.setString(1, b.getCodice());
             stmt.setString(2, b.getStato().name());
-
-            //Supponiamo evento già noto.
-            int eventoId = b.getEvento().getId();
-            stmt.setInt(3, eventoId);
+            stmt.setString(3, b.getProprietario().getEmail());
+            String eventoId = b.getEvento().getId();
+            stmt.setString(4, eventoId);
 
             stmt.executeUpdate();
 
@@ -130,4 +130,20 @@ public class BigliettoDAO {
         }
     }
 
+
+    public void associaEvento(Biglietto biglietto) {
+
+        String query = "UPDATE Biglietto SET idEvento = ? WHERE codiceIdentificativo = ?";
+        try(Connection conn=ConnectionManager.getInstance().getConn();
+            PreparedStatement stmt=conn.prepareStatement(query)){
+            stmt.setString(1, biglietto.getEvento().getId());
+            stmt.setString(2, biglietto.getCodice());
+            stmt.executeUpdate();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+
+
+    }
 }

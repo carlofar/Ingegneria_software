@@ -25,9 +25,11 @@ public class GUIProfilo {
 //        ProfiloUtente p = controllerGestoneProfilo.getAccount("gennaro.derosa10@studenti.unina.it");
 //        System.out.println(p.toString());
 
-//        ProfiloUtente p = controllerGestioneAutenticazione.login("gennaro.derosa10@studenti.unina.it","GennaroDR3");
+        ProfiloUtente p = controllerGestioneAutenticazione.login("gennaro.derosa10@studenti.unina.it","GennaroDR3");
 
         GUIProfilo.apriAccount("gennaro.derosa10@studenti.unina.it");
+        GUIProfilo.visualizzaImmagineProfilo(p);
+        System.out.println("Eventi partecipati : " + GUIProfilo.calcolaNumEventiPartecipati(p));
 
     }
 
@@ -40,6 +42,15 @@ public class GUIProfilo {
     }
 
 
+    public static void visualizzaImmagineProfilo(ProfiloUtente p){
+
+        if(p.getImmagine() != null){
+            System.out.println("Immagine: " + p.getImmagine());
+        }else{
+            System.out.println("Immagine non presente");
+        }
+        //da chiedere se possiamo chiamare direttamente il metodo del profiloutente senza passare per il controller
+    }
 
 
 
