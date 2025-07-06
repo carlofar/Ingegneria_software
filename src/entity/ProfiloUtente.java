@@ -91,7 +91,33 @@ public class ProfiloUtente {
 
     public List<Biglietto> getBiglietti(){
         //ottimizzazione
-        return bigliettoDAO.getStoricoBiglietti(this);
+        if(biglietti.isEmpty()){
+            biglietti = bigliettoDAO.getStoricoBiglietti(this);
+        }
+        return biglietti;
+    }
+
+
+    public boolean trovaBiglietto(Evento e){
+        if(this.biglietti.isEmpty()){
+
+            this.biglietti = bigliettoDAO.getStoricoBiglietti(this);
+
+        }
+
+        int i=0;
+        for(Biglietto biglietto : biglietti){
+
+            System.out.println(i);
+            i++;
+            System.out.println(biglietto.getEvento().getId());
+            System.out.println(e.getId());
+            if(biglietto.getEvento().getId().equals(e.getId())){
+                return true;
+            }
+        }
+        return false;
+
     }
 
 

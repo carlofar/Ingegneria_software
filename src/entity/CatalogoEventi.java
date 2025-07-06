@@ -55,24 +55,22 @@ public class CatalogoEventi {
 
     //PROBLEMATICHE DI ERRORE QUI
     public List<Evento> getEventiOdierni(){
-
+        List<Evento> eventiOdierni;
         if ( listaEventi.isEmpty()){
             listaEventi = eventoDAO.getEventi();
-            return listaEventi;
         }
-//        Date dataOdierna = Date.from(LocalDate.now().atStartOfDay(java.time.ZoneId.systemDefault()).toInstant());
-//        List<Evento> eventiOdierni = eventoDAO.filtraPerData(dataOdierna);
-//        return eventiOdierni;
-
         Date dataOdierna = Date.from(LocalDate.now().atStartOfDay(java.time.ZoneId.systemDefault()).toInstant());
-        List<Evento> eventiOdierni = new ArrayList<>();
-        for (int i = 0; i < listaEventi.size(); i++) {
-            if (listaEventi.get(i).getData().equals(dataOdierna)){
-                eventiOdierni.add(listaEventi.get(i));
-            }
-        }
-//
+        eventiOdierni = eventoDAO.filtraPerData(dataOdierna);//POSSIAMO FARLO ANCHE IN LOCALE
         return eventiOdierni;
+
+//        Date dataOdierna = Date.from(LocalDate.now().atStartOfDay(java.time.ZoneId.systemDefault()).toInstant());
+//        List<Evento> eventiOdierni = new ArrayList<>();
+//        for (int i = 0; i < listaEventi.size(); i++) {
+//            if (listaEventi.get(i).getData().equals(dataOdierna)){
+//                eventiOdierni.add(listaEventi.get(i));
+//            }
+//        }
+//        return eventiOdierni;
     }
 
 
@@ -100,6 +98,19 @@ public class CatalogoEventi {
             }
         }
         return eventi;
+    }
+
+
+    public Evento getEvento(String id){
+        if (listaEventi.isEmpty()){
+            listaEventi = eventoDAO.getEventi();
+        }
+        for (Evento e: listaEventi){
+            if (e.getId().equals(id)){
+                return e;
+            }
+        }
+        return null;
     }
 
 }

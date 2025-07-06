@@ -34,9 +34,9 @@ public class GUIAcquisto {
             System.out.println("Disponibile, Procedere all'acquisto?");
             Scanner input = new Scanner(System.in);
             String risposta = input.nextLine();
-            if (Objects.equals(risposta, "SI")){
-                GUIAcquisto.acquistaBiglietto(p,e);
-            }
+//            if (Objects.equals(risposta, "SI")){
+//                GUIAcquisto.acquistaBiglietto(p,e);
+//            }
 
         }
 
@@ -48,9 +48,9 @@ public class GUIAcquisto {
         return controllerGestioneAcquisto.verificaDisponibilita(e);
     }
 
-    public static void acquistaBiglietto(ProfiloUtente p, Evento e){
-        controllerGestioneAcquisto.acquistaBiglietto(p,e);
-    }
+//    public static void acquistaBiglietto(ProfiloUtente p, Evento e){
+//        controllerGestioneAcquisto.acquistaBiglietto(p,e);
+//    }
 
     public static void mostraListaEventi(){
 

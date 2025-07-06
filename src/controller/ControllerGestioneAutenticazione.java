@@ -10,15 +10,9 @@ public class ControllerGestioneAutenticazione {
 
     //Tale controller è fatto solo per far "funzionare" il sistema
 
-    public boolean RegistraUtente(String nome, String cognome, String eMail, String password){
+    public void RegistraUtente(String nome, String cognome, String eMail, String password){
 
-
-        if(!CatalogoUtenti.getInstance().ceckUtenteByEmail(eMail)){
             CatalogoUtenti.getInstance().aggiungiProfilo(new ProfiloUtente(nome,cognome,eMail,password,ProfiloUtente.Ruolo.UTENTE));
-            return true;
-        }else{
-            return false;
-        }
 
         //trovare utente by emali
         //se non lo trova lo registra
@@ -47,23 +41,26 @@ public class ControllerGestioneAutenticazione {
 
     public ProfiloUtente login(String eMail, String password){
 
-        if(CatalogoUtenti.getInstance().ceckUtenteByEmail(eMail)){
-            ProfiloUtente p = CatalogoUtenti.getInstance().trovaUtenteByEmail(eMail);
-            if(p.checkPassword(password)){
-                System.out.println("Login effettuato con successo");
-                return p;
-            }else{
-                System.out.println("Password errata");
-                //gestire eccezione
-                return null;
-            }
+        ProfiloUtente p = CatalogoUtenti.getInstance().trovaUtenteByEmail(eMail);
+
+        if(p.checkPassword(password)){
+            System.out.println("Login effettuato con successo");
+            return p;
         }else{
-            //gestireEccezione
-            System.out.println("Utente non registrato");
+            System.out.println("Password errata");
+            //gestire eccezione
             return null;
         }
 
 
     }
+
+    public boolean checkEmail(String eMail){
+
+        return CatalogoUtenti.getInstance().ceckUtenteByEmail(eMail);
+        //FARE COSE TESTING CARLO
+    }
+
+
 }
 

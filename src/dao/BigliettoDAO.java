@@ -74,6 +74,7 @@ public class BigliettoDAO {
                 b.setStato(Enum.valueOf(Biglietto.Stato.class, rs.getString("stato")));
                 b.setProprietario(p);
                 Evento e = new Evento();
+                e.setId(rs.getString("idEvento"));
                 e.setTitolo(rs.getString("titolo"));
                 e.setDescrizione(rs.getString("descrizione"));
                 e.setData(rs.getDate("data"));

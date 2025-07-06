@@ -15,6 +15,10 @@ public class ControllerGestioneCatalogo {
         return CatalogoEventi.getInstance().getListaEventi();
     }
 
+    public Evento getEvento(String id){
+        return CatalogoEventi.getInstance().getEvento(id);
+    }
+
 
     public List<Evento> getEventiOdierni(){
         return CatalogoEventi.getInstance().getEventiOdierni();

@@ -4,7 +4,9 @@ import dao.EventoDAO;
 import entity.*;
 import java.util.UUID;
 
-
+//1. REGISTRAZIONE/AUTENTICAZIONE => GUIAUTH -> 2.MOSTRA CATALOGOEVENTI => GUIHOME |||
+//3.ACQUISTO => GUIACQUISTO
+//4.ACCESSO => GUIGESTIONEACCESSI
 
 public class ControllerGestioneAcquisto {
 
@@ -17,17 +19,24 @@ public class ControllerGestioneAcquisto {
     }
 
 
-    public void acquistaBiglietto(ProfiloUtente p,Evento e){
+    public void acquistaBiglietto(ProfiloUtente p,Evento e)throws Exception{
 
         if (!sistemaPOS.autorizzaPagamento(p,e.getCosto())){
             //GESTIRE ECCEZIONE
             System.out.println("Non hai abbastanza soldi per acquistare questo biglietto");
         }else{
-            Biglietto b = generaBiglietto(p,e);
-            b.salvaBigliettoDAO();
-            e.aggiungiBiglietto(b);
-            System.out.println("BigliettoAcquistato");
-
+            //CONTROLLO:
+            //L'EVENTO SELEZIONATO NON PUO' ESSERE ACQUISTATO DALL'UTENTE SE GIA' LO HA FATTO
+            //RICERCARE EVENTUALI BIGLIETTI ACQUISTATI PER QUELL'EVENTO
+            if (!p.trovaBiglietto(e)){
+                Biglietto b = generaBiglietto(p,e);
+                b.salvaBigliettoDAO();
+                e.aggiungiBiglietto(b);
+                System.out.println("BigliettoAcquistato");
+            }else{
+                throw new RuntimeException("Per quest'evento hai già acquistato un biglietto");
+                //throw new ExceptionAcquisto("")
+            }
         }
 
     }
