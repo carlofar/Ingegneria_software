@@ -52,6 +52,8 @@ public class GUIProfilo {
         //da chiedere se possiamo chiamare direttamente il metodo del profiloutente senza passare per il controller
     }
 
-
+    public static int calcolaNumEventiPartecipati(ProfiloUtente p){
+        return controllerGestioneProfilo.calcolaNumEventiPartecipati(p);
+    }
 
 }

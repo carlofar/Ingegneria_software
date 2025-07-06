@@ -99,7 +99,7 @@ public class EventoDAO{
 
     public void aggiornaEntrata(Evento evento){
 
-        String query = "UPDATE evento SET numPartecipantiAttuali  = ? WHERE id = ?";
+        String query = "UPDATE evento SET numPartecipantiAttuali  = ? WHERE idEvento = ?";
 
         try (Connection conn = ConnectionManager.getInstance().getConn();
             PreparedStatement stmt = conn.prepareStatement(query)){

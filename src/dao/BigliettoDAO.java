@@ -20,9 +20,9 @@ public class BigliettoDAO {
 
     public Biglietto trovaBigliettoByCodice(String codice){
         Biglietto b = null;
-        String query = "SELECT B.codiceIdentificativo, B.stato, E.titolo, E.descrizione, E.data, E.orario, E.luogo E.costo" +
-                        "FROM BIGLIETTO B JOIN EVENTO E ON B.idEvento = E.idEvento" +
-                        " WHERE B.codice = ?";
+        String query = " SELECT B.codiceIdentificativo, B.stato, E.titolo, E.descrizione, E.data, E.orario, E.luogo, E.costo " +
+                        " FROM BIGLIETTO B JOIN EVENTO E ON B.idEvento = E.idEvento " +
+                        " WHERE B.codiceIdentificativo = ?";
 
         //effettuare la connessione
 
@@ -79,6 +79,7 @@ public class BigliettoDAO {
                 e.setData(rs.getDate("data"));
                 e.setOraInizio(rs.getString("orario"));
                 e.setLuogo(rs.getString("luogo"));
+                e.setCosto(rs.getFloat("costo"));
                 b.setEvento(e);
                 biglietti.add(b);
             }
@@ -116,7 +117,7 @@ public class BigliettoDAO {
 
     public void aggiornaBiglietto( Biglietto b){
 
-        String query = "UPDATE Biglietto SET stato = ? WHERE codice = ?";
+        String query = "UPDATE Biglietto SET stato = ? WHERE codiceIdentificativo = ?";
         try(Connection conn=ConnectionManager.getInstance().getConn();
             PreparedStatement stmt=conn.prepareStatement(query)){
             stmt.setString(1, b.getStato().name());
