@@ -3,16 +3,24 @@ package controller;
 import dao.UtenteDAO;
 import entity.CatalogoUtenti;
 import entity.ProfiloUtente;
+import utilities.RegistrationException;
 
+import javax.naming.AuthenticationException;
 import java.util.Scanner;
 
 public class ControllerGestioneAutenticazione {
 
     //Tale controller è fatto solo per far "funzionare" il sistema
 
-    public void RegistraUtente(String nome, String cognome, String eMail, String password){
 
-            CatalogoUtenti.getInstance().aggiungiProfilo(new ProfiloUtente(nome,cognome,eMail,password,ProfiloUtente.Ruolo.UTENTE));
+
+    public ProfiloUtente RegistraUtente(String nome, String cognome, String eMail, String password,String immagine){
+            ProfiloUtente p = new ProfiloUtente(nome,cognome,eMail,password,ProfiloUtente.Ruolo.UTENTE);
+            if(immagine != null){
+                p.setImmagine(immagine);
+            }
+            CatalogoUtenti.getInstance().aggiungiProfilo(p);
+            return p;
 
         //trovare utente by emali
         //se non lo trova lo registra
@@ -39,7 +47,7 @@ public class ControllerGestioneAutenticazione {
 
 
 
-    public ProfiloUtente login(String eMail, String password){
+    public ProfiloUtente login(String eMail, String password)throws AuthenticationException{
 
         ProfiloUtente p = CatalogoUtenti.getInstance().trovaUtenteByEmail(eMail);
 
@@ -47,17 +55,15 @@ public class ControllerGestioneAutenticazione {
             System.out.println("Login effettuato con successo");
             return p;
         }else{
-            System.out.println("Password errata");
-            //gestire eccezione
-            return null;
+            throw new AuthenticationException("Password errata");
         }
 
 
     }
 
-    public boolean checkEmail(String eMail){
+    public void checkCredenzialiRegistrzione(String eMail, String password)throws RegistrationException {
 
-        return CatalogoUtenti.getInstance().ceckUtenteByEmail(eMail);
+        CatalogoUtenti.getInstance().ceckUtenteByEmail(eMail);
         //FARE COSE TESTING CARLO
     }
 

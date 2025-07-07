@@ -1,7 +1,9 @@
 package entity;
 
 import dao.UtenteDAO;
+import utilities.RegistrationException;
 
+import javax.naming.AuthenticationException;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -36,11 +38,17 @@ public class CatalogoUtenti {
         return new ArrayList<>(listaUtenti);
     }
 
-    public ProfiloUtente trovaUtenteByEmail(String eMail) {
-        return utenteDAO.trovaUtenteByEmail(eMail);
+    public ProfiloUtente trovaUtenteByEmail(String eMail)throws AuthenticationException {
+        ProfiloUtente rv = utenteDAO.trovaUtenteByEmail(eMail);
+        if(rv == null){
+            throw new AuthenticationException("Utente non trovato");
+        }
+        return rv;
     }
 
-    public boolean ceckUtenteByEmail(String eMail) {
-        return utenteDAO.trovaUtenteByEmail(eMail) != null;
+    public void ceckUtenteByEmail (String eMail) throws RegistrationException {
+        if(utenteDAO.trovaUtenteByEmail(eMail) != null){
+            throw new RegistrationException("La Email è già presente nel sistema");
+        }
     }
 }

@@ -166,14 +166,12 @@ public class Evento {
 
     @Override
     public String toString() {
-        return "Evento{" +
-                "titolo='" + titolo + '\'' +
-                ", descrizione='" + descrizione + '\'' +
-                ", data=" + data +
-                ", oraInizio=" + oraInizio +
-                ", luogo='" + luogo + '\'' +
-                ", costo=" + costo +
-                '}';
+        return  "Titolo; " + titolo +
+                ",  Descrizione:" + descrizione +
+                ",  Data:" + data +
+                ", " + oraInizio +
+                ",  Luogo: " + luogo +
+                ",  Costo: " + costo + "\n";
     }
 
 

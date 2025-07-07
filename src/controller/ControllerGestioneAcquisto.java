@@ -2,6 +2,9 @@ package controller;
 import dao.BigliettoDAO;
 import dao.EventoDAO;
 import entity.*;
+import utilities.PaymentException;
+import utilities.TicketException;
+
 import java.util.UUID;
 
 //1. REGISTRAZIONE/AUTENTICAZIONE => GUIAUTH -> 2.MOSTRA CATALOGOEVENTI => GUIHOME |||
@@ -14,17 +17,17 @@ public class ControllerGestioneAcquisto {
     private final SistemaPOS sistemaPOS = new SistemaPOS();
     private final BigliettoDAO bigliettoDAO = new BigliettoDAO();
 
-    public boolean verificaDisponibilita(Evento e){
+    public boolean verificaDisponibilita(Evento e)throws TicketException{
+        if (!e.verificaDisponibilita()){
+            throw new TicketException("L'evento non ha più posti disponibili");
+        }
         return e.verificaDisponibilita();
     }
 
 
-    public void acquistaBiglietto(ProfiloUtente p,Evento e)throws Exception{
+    public void acquistaBiglietto(ProfiloUtente p,Evento e)throws PaymentException, TicketException {
 
-        if (!sistemaPOS.autorizzaPagamento(p,e.getCosto())){
-            //GESTIRE ECCEZIONE
-            System.out.println("Non hai abbastanza soldi per acquistare questo biglietto");
-        }else{
+        if (sistemaPOS.autorizzaPagamento(p,e.getCosto())){
             //CONTROLLO:
             //L'EVENTO SELEZIONATO NON PUO' ESSERE ACQUISTATO DALL'UTENTE SE GIA' LO HA FATTO
             //RICERCARE EVENTUALI BIGLIETTI ACQUISTATI PER QUELL'EVENTO
@@ -34,7 +37,7 @@ public class ControllerGestioneAcquisto {
                 e.aggiungiBiglietto(b);
                 System.out.println("BigliettoAcquistato");
             }else{
-                throw new RuntimeException("Per quest'evento hai già acquistato un biglietto");
+                throw new TicketException("Per quest'evento hai già acquistato un biglietto");
                 //throw new ExceptionAcquisto("")
             }
         }

@@ -1,6 +1,8 @@
 package dao;
 
 import entity.ProfiloUtente;
+
+import javax.naming.AuthenticationException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -70,27 +72,41 @@ public class UtenteDAO {
 
         //pasi da seguire:
         //1. Creo la query SQL con i parametri
-        String query = "INSERT INTO PROFILOUTENTE(NOME, COGNOME, EMAIL, PASSWORD, RUOLO) VALUES (?,?,?,?,?)";
+        String query = "INSERT INTO PROFILOUTENTE(email, nome, cognome, password, ruolo, immagineProfilo) VALUES (?,?,?,?,?,?)";
         //2. Apro la connessione tramite la classe <<singleton>> ConnectionManager
         //NB.QUESTO è UN TRY-WITH-RESOURCES
         try (Connection conn = ConnectionManager.getInstance().getConn();
              PreparedStatement stmt = conn.prepareStatement(query)){
                  //3.Preparo lo statement e setto i valori
-                 stmt.setString(1, utente.getNome());
-                 stmt.setString(2, utente.getCognome());
-                 stmt.setString(3, utente.getEmail());
-                 stmt.setString(4, utente.getPassword());
-                 stmt.setString(5, utente.getRuolo().toString());
-                 //4.Eseguo la query
-                 stmt.executeUpdate();
-                 //TECNICAMENTE MANCA ANCHE IMMAGINE PROFILO, MA POI NE DISCUTIAMO
-
-
+                    stmt.setString(1, utente.getEmail());
+                    stmt.setString(2, utente.getNome());
+                    stmt.setString(3, utente.getCognome());
+                    stmt.setString(4, utente.getPassword());
+                    stmt.setString(5, utente.getRuolo().toString());
+                    stmt.setString(6, utente.getImmagine());
+                    //4.Eseguo la query
+                    stmt.executeUpdate();
+                    //TECNICAMENTE MANCA ANCHE IMMAGINE PROFILO, MA POI NE DISCUTIAMO
         }catch (SQLException e){
             e.printStackTrace();
         }
     }
 
+
+    public String getImmagineProfilo(String email){
+        String query = "SELECT immagineProfilo FROM PROFILOUTENTE WHERE email = ?";
+        try(Connection conn = ConnectionManager.getInstance().getConn();
+            PreparedStatement stmt = conn.prepareStatement(query)){
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+            if(rs.next()){
+                return rs.getString("immagineProfilo");
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 
 }

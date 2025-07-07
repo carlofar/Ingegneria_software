@@ -25,7 +25,7 @@ public class ProfiloUtente {
 
 
     private static BigliettoDAO bigliettoDAO = new BigliettoDAO();
-
+    private static UtenteDAO utenteDAO = new UtenteDAO();
 
     //Costruttore
     public ProfiloUtente(String nome, String cognome, String email, String password, Ruolo ruolo) {
@@ -63,6 +63,9 @@ public class ProfiloUtente {
     }
 
     public String getImmagine(){
+        if(this.immagine == null){
+            this.immagine = utenteDAO.getImmagineProfilo(this.email);
+        }
         return this.immagine;
     }
 
@@ -105,11 +108,7 @@ public class ProfiloUtente {
 
         }
 
-        int i=0;
         for(Biglietto biglietto : biglietti){
-
-            System.out.println(i);
-            i++;
             System.out.println(biglietto.getEvento().getId());
             System.out.println(e.getId());
             if(biglietto.getEvento().getId().equals(e.getId())){
@@ -117,7 +116,6 @@ public class ProfiloUtente {
             }
         }
         return false;
-
     }
 
 
