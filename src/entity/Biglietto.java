@@ -2,6 +2,7 @@ package entity;
 import dao.BigliettoDAO;
 import dao.EventoDAO;
 
+import java.nio.file.AccessDeniedException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -54,6 +55,9 @@ public class  Biglietto {
     }
 
     public ProfiloUtente getProprietario() {
+        if ( proprietario == null ){
+            bigliettoDAO.getProprietario(this);
+        }
         return proprietario;
     }
 
@@ -80,17 +84,24 @@ public class  Biglietto {
         this.evento = evento;
     }
 
-    public boolean verifificaAccesso(Evento e){
+    public boolean verifificaAccesso(Evento e)throws AccessDeniedException{
 
 
         LocalDate localDate = LocalDate.now();
         java.util.Date data = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-        System.out.println("Stato: " + this.stato.equals(Stato.VALIDO) + " Evento: " + this.evento.equals(e) + " Data: " + this.evento.getData().equals(data)) ;
+        //System.out.println("Stato: " + this.stato.equals(Stato.VALIDO) + " Evento: " + this.evento.equals(e) + " Data: " + this.evento.getData().equals(data)) ;
 
-        return this.stato.equals(Stato.VALIDO) &&
-                this.evento.equals(e) &&
-                this.evento.getData().equals(data);
+        if (!this.stato.equals(Stato.VALIDO)){
+            throw new AccessDeniedException("Il biglietto è stato già consumato");
+        }
+        if (!this.evento.equals(e)){
+            throw new AccessDeniedException("L'evento selezionato non coincide!");
+        }
+        if (!this.evento.getData().equals(data)){
+            throw new AccessDeniedException("La data sul biglietto non corrisponde con la data odierna");
+        }
+        return true;
     }
 
     public void marcaComeConsumato(){
@@ -107,18 +118,15 @@ public class  Biglietto {
 
     @Override
     public String toString() {
-        return "Biglietto{" +
-                "codice='" + codice + '\'' +
-                ", stato=" + stato +
-                ", proprietario=" + proprietario +
-                ", evento=" + evento +
-                '}';
+        return "Biglietto->" +
+                "codice: " + codice +
+                ", stato:" + stato +
+                "\nEventoAssociato: " + evento.toString() + "\n";
     }
 
 
     public void aggiornaDAO() {
         bigliettoDAO.aggiornaBiglietto(this);
     }
-
 
 }

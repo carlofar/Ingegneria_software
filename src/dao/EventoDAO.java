@@ -2,9 +2,9 @@ package dao;
 
 import entity.Biglietto;
 import entity.Evento;
-import entity.ProfiloUtente;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,6 +75,8 @@ public class EventoDAO{
     }
 
 
+    // METODO DI AGGIORNAMENTO DEL DB IN CASO DI CREAZIONE DI UN EVENTO DA PARTE DELL'AMMINISTRATORE
+    // METODO EFFETTUATO SOLO PER INSERIRE MANUALMENTE IN DB GLI EVENTI
     public void salvaEvento(Evento evento){
         String query = "INSERT INTO EVENTO(TITOLO, DESCRIZIONE, DATA, ORARIO, LUOGO, COSTO, MAXPARTECIPANTI) VALUES (?,?,?,?,?,?,?)";
         try(Connection conn = ConnectionManager.getInstance().getConn();
@@ -115,18 +117,18 @@ public class EventoDAO{
 
     }
 
-    public List<Evento> filtraPerData(java.util.Date data){
+    
+    public List<Evento> filtraPerData(LocalDate data){
         List<Evento> eventi = new ArrayList<>();
-        String query = "SELECT* FROM EVENTO WHERE data = ?";
+        Date dataSQL = Date.valueOf(data);
+        String query = "SELECT * FROM EVENTO WHERE data = ?";
         try(Connection conn = ConnectionManager.getInstance().getConn();
             PreparedStatement stmt = conn.prepareStatement(query)){
-
-            Date d = new Date(data.getTime());
-            stmt.setDate(1, d);
+            stmt.setDate(1, dataSQL);
 
             ResultSet rs = stmt.executeQuery();
 
-            if (rs.next()){
+            while (rs.next()){
                 Evento e = new Evento(
                         rs.getString("titolo"),
                         rs.getString("descrizione"),

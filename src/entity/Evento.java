@@ -86,6 +86,7 @@ public class Evento {
     }
 
     public Date getData() {
+
         return data;
     }
 
@@ -166,9 +167,12 @@ public class Evento {
 
     @Override
     public String toString() {
-        return  "Titolo; " + titolo +
-                ",  Descrizione:" + descrizione +
-                ",  Data:" + data +
+            LocalDate data = ((java.sql.Date) this.getData()).toLocalDate();
+
+
+        return  "Titolo: " + titolo +
+                ",  Descrizione: " + descrizione +
+                ",  Data: " + data.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) +
                 ", " + oraInizio +
                 ",  Luogo: " + luogo +
                 ",  Costo: " + costo + "\n";
@@ -176,7 +180,9 @@ public class Evento {
 
 
     public Biglietto trovaBiglietto(String codice) {
-        return bigliettoDAO.trovaBigliettoByCodice(codice);
+        Biglietto b =  bigliettoDAO.trovaBigliettoByCodice(codice);
+        b.setProprietario(bigliettoDAO.getProprietario(b));
+        return b;
     }
 
     public void aggiornaEntrataDAO() {

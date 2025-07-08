@@ -14,9 +14,6 @@ import java.util.List;
 
 public class BigliettoDAO {
 
-    /*
-
-     */
 
     public Biglietto trovaBigliettoByCodice(String codice){
         Biglietto b = null;
@@ -116,6 +113,7 @@ public class BigliettoDAO {
     }
 
 
+    //Cambia lo stato del DB, aggiornando l'attributo stato in CONSUMATO in quanto parte del caso d'uso ControlloAccessi
     public void aggiornaBiglietto( Biglietto b){
 
         String query = "UPDATE Biglietto SET stato = ? WHERE codiceIdentificativo = ?";
@@ -127,9 +125,8 @@ public class BigliettoDAO {
         }
         catch(SQLException e) {
             e.printStackTrace();
-
-
         }
+
     }
 
 
@@ -146,6 +143,6 @@ public class BigliettoDAO {
             e.printStackTrace();
         }
 
-
     }
+
 }

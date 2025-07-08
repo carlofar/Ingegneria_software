@@ -56,10 +56,10 @@ public class CatalogoEventi {
     //PROBLEMATICHE DI ERRORE QUI
     public List<Evento> getEventiOdierni(){
         List<Evento> eventiOdierni;
-        if ( listaEventi.isEmpty()){
-            listaEventi = eventoDAO.getEventi();
-        }
-        Date dataOdierna = Date.from(LocalDate.now().atStartOfDay(java.time.ZoneId.systemDefault()).toInstant());
+//        if ( listaEventi.isEmpty()){
+//            listaEventi = eventoDAO.getEventi();
+//        }
+        LocalDate dataOdierna = LocalDate.now();
         eventiOdierni = eventoDAO.filtraPerData(dataOdierna);//POSSIAMO FARLO ANCHE IN LOCALE
         return eventiOdierni;
 

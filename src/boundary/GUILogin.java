@@ -2,6 +2,7 @@ package boundary;
 
 import controller.ControllerGestioneAutenticazione;
 import controller.ControllerGestioneProfilo;
+import entity.Biglietto;
 import entity.ProfiloUtente;
 import utilities.ProfileException;
 import utilities.RegistrationException;
@@ -10,6 +11,7 @@ import javax.naming.AuthenticationException;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class GUILogin extends JFrame {
     private static final ControllerGestioneAutenticazione controllerGestioneAutenticazione = new ControllerGestioneAutenticazione();
@@ -50,16 +52,21 @@ public class GUILogin extends JFrame {
     private JPasswordField passwordField1;
     private JButton esciButton;
     private JButton visualizzaImmagineButton;
+    private JButton calcolaNumeroEventiPartecipatiButton;
+    private JTextArea listaBiglietti;
+    private JComboBox comboBiglietti;
+    private JButton scaricaButton;
 
     public GUILogin() {
 
-        handleLogin();
+        initInterface();
+
 
 
     }
 
 
-    private void handleLogin(){
+    private void initInterface(){
         handleAccesso();
         handleRegistrazione();
     }
@@ -74,7 +81,7 @@ public class GUILogin extends JFrame {
                     utenteLoggato = controllerGestioneAutenticazione.login(email, password);
                     JOptionPane.showMessageDialog(null, "Login effettuato!");
                     tabLogSign.setVisible(false);
-                    initProfilo(utenteLoggato);
+                    initProfilo();
 //                    JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(mainPanel);
 //                    frame.dispose();
                     //NON SI SPEGNE IL SISTEMA!
@@ -114,32 +121,34 @@ public class GUILogin extends JFrame {
                 utenteLoggato = controllerGestioneAutenticazione.RegistraUtente(nome,cognome,eMail,password,immagine);
                 JOptionPane.showMessageDialog(null, "Registrazione effettuata!");
                 panelReg.setVisible(false);
-                initProfilo(utenteLoggato);
+                initProfilo();
 //                JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(mainPanel);
 //                frame.dispose();
             }
         });
     }
 
-    private void initProfilo(ProfiloUtente p) {
+    private void initProfilo() {
 
         tabProfilo.setVisible(true);
-        assert p != null;
-        nameField.setText(p.getNome());
-        surnameField.setText(p.getCognome());
-        mailField.setText(p.getEmail());
-        passwordField1.setText(p.getPassword());
+        assert utenteLoggato != null;
+        nameField.setText(utenteLoggato.getNome());
+        surnameField.setText(utenteLoggato.getCognome());
+        mailField.setText(utenteLoggato.getEmail());
+        passwordField1.setText(utenteLoggato.getPassword());
         handleEsci();
-        handleVisualizzaImmagine(p);
+        handleVisualizzaImmagine();
+        handleVisualizzaNumEventiPartecipati();
+        mostraStoricoBiglietti();
     }
 
-    private void handleVisualizzaImmagine(ProfiloUtente p){
+    private void handleVisualizzaImmagine(){
         visualizzaImmagineButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try{
 
-                    JOptionPane.showMessageDialog(null, "Immagine profilo:\n" + controllerGestioneProfilo.getImmagineProfilo(p) , "Immagine profilo", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Immagine profilo:\n" + controllerGestioneProfilo.getImmagineProfilo(utenteLoggato) , "Immagine profilo", JOptionPane.INFORMATION_MESSAGE);
                 }catch (ProfileException exP){
                     JOptionPane.showMessageDialog(null, exP.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
                 }
@@ -147,17 +156,58 @@ public class GUILogin extends JFrame {
         });
     }
 
+    private void handleVisualizzaNumEventiPartecipati(){
+        calcolaNumeroEventiPartecipatiButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int numEventi = controllerGestioneProfilo.calcolaNumEventiPartecipati(utenteLoggato);
+                if(numEventi == 0){
+                    JOptionPane.showMessageDialog(null, "Non hai partecipato a nessun evento!");
+
+                }else {
+                    JOptionPane.showMessageDialog(null, "Hai partecipato a " + numEventi + " eventi!");
+                }
+            }
+        });
+    }
     private void handleEsci(){
         esciButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(null, "Grazie per aver usato TicketOne!");
-                //                JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(mainPanel);
-//                frame.dispose();
+//              JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(mainPanel);
+//              frame.dispose();
                 System.exit(0);
             }
         });
     }
+
+
+    private void mostraStoricoBiglietti(){
+        List<Biglietto> biglietti = controllerGestioneProfilo.getStoricoBiglietti(utenteLoggato);
+        listaBiglietti.setText("");
+        //listaBiglietti.append("Biglietti acquistati:\n");
+        biglietti.forEach(biglietto -> listaBiglietti.append(biglietto.toString() + "\n"));
+        scaricaBiglietto(biglietti);
+    }
+
+    private void scaricaBiglietto(List<Biglietto> biglietti){
+        comboBiglietti.removeAllItems();
+        for (Biglietto biglietto : biglietti) {
+            comboBiglietti.addItem(controllerGestioneProfilo.toStringBiglietto(biglietto));
+        }
+        scaricaButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Biglietto biglietto = (Biglietto) comboBiglietti.getSelectedItem();
+                assert biglietto != null;
+                controllerGestioneProfilo.scaricaBiglietto(biglietto);
+                JOptionPane.showMessageDialog(null, "Biglietto scaricato:\n" + biglietto.toString());
+            }
+        });
+    }
+
+
     public static void main(String[] args) {
 
         SwingUtilities.invokeLater(() -> {
@@ -166,8 +216,8 @@ public class GUILogin extends JFrame {
             guiLogin.setTitle("TicketOne");//NOME DELL'APP ||ABBIAMO CREATO LA SCHERMATA
             guiLogin.setContentPane(new GUILogin().mainPanel); // new [nomeClasse.nomePanel] SERVE PER BINDARE LA SCHERMATA CON IL PANEL CREATO
             guiLogin.setDefaultCloseOperation(EXIT_ON_CLOSE);//METODO DI CHIUSURA DEL PANEL CHE CORRISPONDE ALLA CHIUSURA DEL PROGRAMMA
-            guiLogin.pack();//ALL'APERTURA DELLA SCERMATA SETTA LA GRANDEZZA DELL'INTERFACCIA IN MODO DA VEDERE TUTTE LE COSE PRESENTI
-            guiLogin.setSize(400,200);
+            //guiLogin.pack();//ALL'APERTURA DELLA SCERMATA SETTA LA GRANDEZZA DELL'INTERFACCIA IN MODO DA VEDERE TUTTE LE COSE PRESENTI
+            guiLogin.setSize(848,480);
             guiLogin.setLocationRelativeTo(null); //MI METTE L'INTERFACCIA AL CENTRO DELLO SCHERMO
             guiLogin.setVisible(true);
         });

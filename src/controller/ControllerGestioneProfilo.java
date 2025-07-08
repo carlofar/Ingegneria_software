@@ -5,7 +5,14 @@ import entity.*;
 import utilities.ProfileException;
 
 import javax.naming.AuthenticationException;
+import javax.print.Doc;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.List;
+import com.lowagie.text.Document;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfWriter;
+
 public class ControllerGestioneProfilo {
 
     private final BigliettoDAO bigliettoDAO = new BigliettoDAO();
@@ -38,4 +45,27 @@ public class ControllerGestioneProfilo {
             throw new ProfileException("Non hai un'immagine associata al profilo");
         }
     }
+
+    public void scaricaBiglietto(Biglietto b){
+        Document document = new Document();
+        try {
+            PdfWriter.getInstance(document, new FileOutputStream("Biglietto.pdf"));
+            document.open();
+            document.add(new Paragraph(b.toString()));
+            document.close();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public String toStringBiglietto(Biglietto b){
+        String str = b.toString();
+        int start = str.indexOf("Biglietto->") + "Biglietto->".length();
+        int end = str.indexOf("Evento",start);
+        String toStringBiglietto = str.substring(start,end);
+        return toStringBiglietto + " nome evento: " + b.getEvento().getTitolo();
+
+    }
+
 }

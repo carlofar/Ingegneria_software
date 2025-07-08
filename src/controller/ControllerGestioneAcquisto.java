@@ -49,4 +49,7 @@ public class ControllerGestioneAcquisto {
         String codice = "EVT-" + e.getId() + "-UT" + p.getEmail().hashCode() + "-" + UUID.randomUUID().toString().substring(0,5);
         return new Biglietto(codice,p,e);
     }
+
+
+
 }
