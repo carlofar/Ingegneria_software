@@ -3,6 +3,7 @@ package entity;
 import dao.EventoDAO;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class CatalogoEventi {
 
 
     public void aggiungiEvento(Evento e){
+
         listaEventi.add(e);
     }
 
@@ -38,16 +40,19 @@ public class CatalogoEventi {
 
         if ( listaEventi.isEmpty()){
             listaEventi = eventoDAO.getEventi();
-            return listaEventi;
+            //return listaEventi;
         }
         LocalDate dataOdierna = LocalDate.now();
         List<Evento> eventi = new ArrayList<>();
-        for (int i = 0; i < listaEventi.size(); i++) {
-            if (listaEventi.get(i).getData().after(Date.from(dataOdierna.minusDays(1).atStartOfDay(java.time.ZoneId.systemDefault()).toInstant()))){
-
-                eventi.add(listaEventi.get(i));
-
+        for (Evento evento : listaEventi) {
+            if (dataOdierna.minusDays(1).isBefore(evento.getData())) {
+                eventi.add(evento);
             }
+//            if (listaEventi.get(i).getData().after(Date.from(dataOdierna.minusDays(1).atStartOfDay(java.time.ZoneId.systemDefault()).toInstant()))){
+//
+//                eventi.add(listaEventi.get(i));
+//
+//            }
         }
 
         return eventi;
@@ -76,12 +81,16 @@ public class CatalogoEventi {
 
     public List<Evento> filtraPerData(LocalDate data){
         //List<Evento> eventiOdierni = eventoDAO.getEventi();
+        if ( listaEventi.isEmpty()){
+            listaEventi = eventoDAO.getEventi();
+            return listaEventi;
+        }
+
         List<Evento> eventi = new ArrayList<>();
-        for (int i = 0; i < listaEventi.size(); i++) {
-            if (listaEventi.get(i).getData().equals(data)){
-
-                eventi.add(listaEventi.get(i));
-
+        for (Evento evento : listaEventi) {
+            LocalDate dataEvento = evento.getData();
+            if (data.minusDays(1).isBefore(dataEvento)) {
+                eventi.add(evento);
             }
         }
 
@@ -89,11 +98,14 @@ public class CatalogoEventi {
     }
 
     public List<Evento> filtraPerLuogo(String luogo){
+        if ( listaEventi.isEmpty()){
+            listaEventi = eventoDAO.getEventi();
+        }
         List<Evento> eventi = new ArrayList<>();
-        for (int i = 0; i < listaEventi.size(); i++) {
-            if (listaEventi.get(i).getLuogo().equals(luogo)){
+        for (Evento evento : listaEventi) {
+            if (evento.getLuogo().contains(luogo)) {
 
-                eventi.add(listaEventi.get(i));
+                eventi.add(evento);
 
             }
         }

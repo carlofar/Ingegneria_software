@@ -12,13 +12,13 @@ import java.util.UUID;
 
 public class Evento {
 
-    private static EventoDAO eventoDAO = new EventoDAO();
-    private static BigliettoDAO bigliettoDAO = new BigliettoDAO();
+    private static final EventoDAO eventoDAO = new EventoDAO();
+    private static final BigliettoDAO bigliettoDAO = new BigliettoDAO();
 
     private String id;
     private String titolo;
     private String descrizione;
-    private Date data;
+    private LocalDate data;
     private String oraInizio;
     private String luogo;
     private int maxPartecipanti;
@@ -69,15 +69,18 @@ public class Evento {
     //getter & setter
 
     public String getId() {
+
         return id;
     }
 
     public void setId(String id){
+
         this.id = id;
     }
 
 
     public int getNumPartecipantiTotali(){
+
         return listaBiglietti.size();
     }
 
@@ -85,8 +88,7 @@ public class Evento {
         return titolo;
     }
 
-    public Date getData() {
-
+    public LocalDate getData() {
         return data;
     }
 
@@ -129,7 +131,7 @@ public class Evento {
         this.descrizione = descrizione;
     }
 
-    public void setData(Date data) {
+    public void setData(LocalDate data) {
         this.data = data;
     }
 
@@ -167,8 +169,8 @@ public class Evento {
 
     @Override
     public String toString() {
-            LocalDate data = ((java.sql.Date) this.getData()).toLocalDate();
-
+            //LocalDate data = ((java.sql.Date) this.getData()).toLocalDate();
+            LocalDate data = this.getData();
 
         return  "Titolo: " + titolo +
                 ",  Descrizione: " + descrizione +
@@ -181,7 +183,8 @@ public class Evento {
 
     public Biglietto trovaBiglietto(String codice) {
         Biglietto b =  bigliettoDAO.trovaBigliettoByCodice(codice);
-        b.setProprietario(bigliettoDAO.getProprietario(b));
+        ProfiloUtente p = bigliettoDAO.getProprietario(b);
+        b.setProprietario(p);
         return b;
     }
 

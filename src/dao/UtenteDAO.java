@@ -56,7 +56,7 @@ public class UtenteDAO {
     }
 
     public void aggiornaProfilo(ProfiloUtente utente){
-        String sql = "UPDATE PROFILOUTENTE SET IMG = ? WHERE EMAIL = ?";
+        String sql = "UPDATE PROFILOUTENTE SET immagineProfilo = ? WHERE EMAIL = ?";
         try(Connection conn = ConnectionManager.getInstance().getConn();
             PreparedStatement stmt = conn.prepareStatement(sql)){
             stmt.setString(1,utente.getImmagine());
@@ -94,7 +94,7 @@ public class UtenteDAO {
 
 
     public String getImmagineProfilo(String email){
-        String query = "SELECT immagineProfilo FROM PROFILOUTENTE WHERE email = ?";
+        String query = "SELECT immagineProfilo FROM ProfiloUtente WHERE email = ?";
         try(Connection conn = ConnectionManager.getInstance().getConn();
             PreparedStatement stmt = conn.prepareStatement(query)){
             stmt.setString(1, email);

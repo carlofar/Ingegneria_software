@@ -12,7 +12,8 @@ import java.util.Objects;
 public class  Biglietto {
 
     private static final BigliettoDAO bigliettoDAO = new BigliettoDAO();
-    private static final EventoDAO eventoDAO = new EventoDAO();
+
+
     public void salvaBigliettoDAO() {
         bigliettoDAO.salvaBiglietto(this);
     }
@@ -47,10 +48,12 @@ public class  Biglietto {
     //getter and setter
 
     public String getCodice() {
+
         return codice;
     }
 
     public Stato getStato() {
+
         return stato;
     }
 
@@ -82,13 +85,14 @@ public class  Biglietto {
 
     public void setEvento(Evento evento) {
         this.evento = evento;
+
     }
 
     public boolean verifificaAccesso(Evento e)throws AccessDeniedException{
 
 
-        LocalDate localDate = LocalDate.now();
-        java.util.Date data = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+//        LocalDate localDate = LocalDate.now();
+//        java.util.Date data = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
         //System.out.println("Stato: " + this.stato.equals(Stato.VALIDO) + " Evento: " + this.evento.equals(e) + " Data: " + this.evento.getData().equals(data)) ;
 
@@ -98,14 +102,16 @@ public class  Biglietto {
         if (!this.evento.equals(e)){
             throw new AccessDeniedException("L'evento selezionato non coincide!");
         }
-        if (!this.evento.getData().equals(data)){
+        if (!this.evento.getData().equals(e.getData())){
             throw new AccessDeniedException("La data sul biglietto non corrisponde con la data odierna");
         }
         return true;
     }
 
     public void marcaComeConsumato(){
+
         this.stato = Stato.CONSUMATO;
+        bigliettoDAO.aggiornaBiglietto(this);
     }
 
     @Override
@@ -121,12 +127,6 @@ public class  Biglietto {
         return "Biglietto->" +
                 "codice: " + codice +
                 ", stato:" + stato +
-                "\nEventoAssociato: " + evento.toString() + "\n";
+                "   \nEvento Associato: " + evento.toString() + "\n";
     }
-
-
-    public void aggiornaDAO() {
-        bigliettoDAO.aggiornaBiglietto(this);
-    }
-
 }

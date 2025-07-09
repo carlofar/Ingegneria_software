@@ -14,6 +14,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.time.LocalDate;
 import java.util.List;
 
 public class GUIAcquisto extends JFrame{
@@ -35,6 +38,8 @@ public class GUIAcquisto extends JFrame{
     private JTextArea areaEventi;
     private JScrollPane scrollEventi;
     private JButton bottoneAcquista;
+    private JTextField dataTextField;
+    private JTextField localitàTextField;
 
     public GUIAcquisto() {
         handleLogin();
@@ -42,7 +47,9 @@ public class GUIAcquisto extends JFrame{
         initEventPanel();
         handleAcquista();
 
+
     }
+
 
 
     private void handleLogin(){
@@ -82,8 +89,112 @@ public class GUIAcquisto extends JFrame{
             comboEventi.addItem(evento);
             areaEventi.append(evento.toString() + "\n");
         }
-
+        handleFiltraPerData();
+        handleFiltraPerLocalita();
     }
+
+    private void handleFiltraPerData(){
+        dataTextField.setEnabled(true);
+        //dataTextField.setForeground(Color.BLACK);
+        dataTextField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                JTextField annoField = new JTextField(4);
+                JTextField meseField = new JTextField(2);
+                JTextField giornoField = new JTextField(2);
+
+                JPanel pannello = new JPanel(new GridLayout(3, 2));
+                pannello.add(new JLabel("Anno:"));
+                pannello.add(annoField);
+                pannello.add(new JLabel("Mese:"));
+                pannello.add(meseField);
+                pannello.add(new JLabel("Giorno:"));
+                pannello.add(giornoField);
+
+                int risultato = JOptionPane.showConfirmDialog(
+                        null,
+                        pannello,
+                        "Inserisci data (AAAA-MM-GG)",
+                        JOptionPane.OK_CANCEL_OPTION
+                );
+
+
+
+                if (risultato == JOptionPane.OK_OPTION) {
+                    try {
+                        int anno = Integer.parseInt(annoField.getText());
+                        int mese = Integer.parseInt(meseField.getText());
+                        int giorno = Integer.parseInt(giornoField.getText());
+                        LocalDate data = LocalDate.of(anno, mese, giorno);
+                        JOptionPane.showMessageDialog(null, "Data inserita: " + data);
+
+
+                        List<Evento> eventiFiltrati = controllerGestioneCatalogo.filtraEventiPerData(data);
+
+                        if (eventiFiltrati.isEmpty()) {
+                            JOptionPane.showMessageDialog(null, "Nessun evento trovato.");
+                            return;
+                        }else{
+                            areaEventi.setText("");
+                            comboEventi.removeAllItems();
+                            for (Evento evento : eventiFiltrati) {
+                                areaEventi.append(evento.toString() + "\n");
+                                comboEventi.addItem(evento);
+                            }
+                        }
+
+
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(null, "Data non valida.");
+                    }
+                }
+            }
+        });
+    }
+
+
+    private void handleFiltraPerLocalita(){
+        localitàTextField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                String localita = JOptionPane.showInputDialog(
+                        null,
+                        "Inserisci la località da cercare:",
+                        "Filtro Località",
+                        JOptionPane.QUESTION_MESSAGE
+                );
+
+                if (localita != null && !localita.isBlank()) {
+
+                    JOptionPane.showMessageDialog(null, "Hai inserito: " + localita);
+                    List<Evento> eventiFiltrati = controllerGestioneCatalogo.filtraEventiPerLuogo(localita);
+                    if (eventiFiltrati.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Nessun evento trovato.");
+                        return;
+                    }
+                    areaEventi.setText("");
+                    comboEventi.removeAllItems();
+                    for (Evento evento : eventiFiltrati) {
+                        areaEventi.append(evento.toString() + "\n");
+                        comboEventi.addItem(evento);
+                    }
+
+                } else {
+                    JOptionPane.showMessageDialog(null, "Località non inserita o vuota.");
+                }
+            }
+        });
+    }
+
+
+
+
+
+
+
+
+
 
     private void handleAcquista(){
         bottoneAcquista.addActionListener(new ActionListener() {

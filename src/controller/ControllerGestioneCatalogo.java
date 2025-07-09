@@ -3,6 +3,7 @@ import entity.CatalogoEventi;
 import entity.Evento;
 
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -24,5 +25,12 @@ public class ControllerGestioneCatalogo {
         return CatalogoEventi.getInstance().getEventiOdierni();
     }
 
+    public List<Evento> filtraEventiPerData(LocalDate data) {
+        return CatalogoEventi.getInstance().filtraPerData(data);
+    }
+
+    public List<Evento> filtraEventiPerLuogo(String luogo) {
+        return CatalogoEventi.getInstance().filtraPerLuogo(luogo);
+    }
 
 }

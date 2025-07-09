@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +41,8 @@ public class BigliettoDAO {
                 Evento e = new Evento();
                 e.setTitolo(rs.getString("titolo"));
                 e.setDescrizione(rs.getString("descrizione"));
-                e.setData(rs.getDate("data"));
+                LocalDate data = rs.getDate("data").toLocalDate();
+                e.setData(data);
                 e.setOraInizio(rs.getString("orario"));
                 e.setLuogo(rs.getString("luogo"));
                 e.setCosto(rs.getFloat("costo"));
@@ -74,7 +76,8 @@ public class BigliettoDAO {
                 e.setId(rs.getString("idEvento"));
                 e.setTitolo(rs.getString("titolo"));
                 e.setDescrizione(rs.getString("descrizione"));
-                e.setData(rs.getDate("data"));
+                LocalDate data = rs.getDate("data").toLocalDate();
+                e.setData(data);
                 e.setOraInizio(rs.getString("orario"));
                 e.setLuogo(rs.getString("luogo"));
                 e.setCosto(rs.getFloat("costo"));

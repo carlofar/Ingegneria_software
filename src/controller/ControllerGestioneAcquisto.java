@@ -17,11 +17,10 @@ public class ControllerGestioneAcquisto {
     private final SistemaPOS sistemaPOS = new SistemaPOS();
     private final BigliettoDAO bigliettoDAO = new BigliettoDAO();
 
-    public boolean verificaDisponibilita(Evento e)throws TicketException{
+    public void verificaDisponibilita(Evento e)throws TicketException{
         if (!e.verificaDisponibilita()){
             throw new TicketException("L'evento non ha più posti disponibili");
         }
-        return e.verificaDisponibilita();
     }
 
 
@@ -33,6 +32,9 @@ public class ControllerGestioneAcquisto {
             //RICERCARE EVENTUALI BIGLIETTI ACQUISTATI PER QUELL'EVENTO
             if (!p.trovaBiglietto(e)){
                 Biglietto b = generaBiglietto(p,e);
+                //DA VEDERE
+                System.out.println("Biglietto generato: " + b.toString() + b.getProprietario().toString());
+                p.aggiungiBiglietto(b);
                 b.salvaBigliettoDAO();
                 e.aggiungiBiglietto(b);
                 System.out.println("BigliettoAcquistato");

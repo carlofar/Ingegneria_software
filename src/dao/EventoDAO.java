@@ -46,7 +46,8 @@ public class EventoDAO{
                     e.setId(rs.getString("idEvento"));
                     e.setTitolo(rs.getString("titolo"));
                     e.setDescrizione(rs.getString("descrizione"));
-                    e.setData(rs.getDate("data"));
+                    LocalDate data = rs.getDate("data").toLocalDate();
+                    e.setData(data);
                     e.setOraInizio(rs.getString("orario"));
                     e.setLuogo(rs.getString("luogo"));
                     e.setCosto(rs.getFloat("costo"));
@@ -84,8 +85,8 @@ public class EventoDAO{
 
             stmt.setString(1, evento.getTitolo());
             stmt.setString(2, evento.getDescrizione());
-            Date data = new Date(evento.getData().getTime());
-            stmt.setDate(3, data );
+            Date sqlDate = Date.valueOf(evento.getData());
+            stmt.setDate(3, sqlDate);
             stmt.setString(4, evento.getOraInizio());
             stmt.setString(5, evento.getLuogo());
             stmt.setFloat(6, evento.getCosto());
@@ -129,10 +130,11 @@ public class EventoDAO{
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()){
+                LocalDate dataEvento = rs.getDate("data").toLocalDate();
                 Evento e = new Evento(
                         rs.getString("titolo"),
                         rs.getString("descrizione"),
-                        rs.getDate("data"),
+                        dataEvento,
                         rs.getString("orario"),
                         rs.getString("luogo"),
                         rs.getFloat("costo"),
@@ -147,35 +149,36 @@ public class EventoDAO{
         return eventi;
     }
 
-
-    public List<Evento> filtraPerLuogo(String luogo){
-        List<Evento> eventi = new ArrayList<>();
-        String query = "SELECT* FROM EVENTO WHERE luogo = ?";
-        try(Connection conn = ConnectionManager.getInstance().getConn();
-            PreparedStatement stmt = conn.prepareStatement(query)){
-
-            stmt.setString(1, luogo);
-
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()){
-                Evento e = new Evento(
-                        rs.getString("titolo"),
-                        rs.getString("descrizione"),
-                        rs.getDate("data"),
-                        rs.getString("orario"),
-                        rs.getString("luogo"),
-                        rs.getFloat("costo"),
-                        rs.getInt("maxPartecipanti"));
-                eventi.add(e);
-            }
-
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
-
-        return eventi;
-    }
+    //METODO SUPERFLUO
+//    private List<Evento> filtraPerLuogo(String luogo){
+//        List<Evento> eventi = new ArrayList<>();
+//        String query = "SELECT* FROM EVENTO WHERE luogo = ?";
+//        try(Connection conn = ConnectionManager.getInstance().getConn();
+//            PreparedStatement stmt = conn.prepareStatement(query)){
+//
+//            stmt.setString(1, luogo);
+//
+//            ResultSet rs = stmt.executeQuery();
+//
+//            if (rs.next()){
+//                LocalDate dataEvento = rs.getDate("data").toLocalDate();
+//                Evento e = new Evento(
+//                        rs.getString("titolo"),
+//                        rs.getString("descrizione"),
+//                        dataEvento,
+//                        rs.getString("orario"),
+//                        rs.getString("luogo"),
+//                        rs.getFloat("costo"),
+//                        rs.getInt("maxPartecipanti"));
+//                eventi.add(e);
+//            }
+//
+//        }catch (SQLException e){
+//            e.printStackTrace();
+//        }
+//
+//        return eventi;
+//    }
 
 
     public List<Biglietto> getBigliettiAssociati(Evento evento) {

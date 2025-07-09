@@ -1,8 +1,10 @@
 package boundary;
 
 import controller.ControllerGestioneAutenticazione;
+import controller.ControllerGestioneCatalogo;
 import controller.ControllerGestioneProfilo;
 import entity.Biglietto;
+import entity.Evento;
 import entity.ProfiloUtente;
 import utilities.ProfileException;
 import utilities.RegistrationException;
@@ -16,6 +18,7 @@ import java.util.List;
 public class GUILogin extends JFrame {
     private static final ControllerGestioneAutenticazione controllerGestioneAutenticazione = new ControllerGestioneAutenticazione();
     private static final ControllerGestioneProfilo controllerGestioneProfilo = new ControllerGestioneProfilo();
+    private static final ControllerGestioneCatalogo controllerGestioneCatalogo = new ControllerGestioneCatalogo();
 
     private ProfiloUtente utenteLoggato;
     private JPanel mainPanel;
@@ -56,6 +59,7 @@ public class GUILogin extends JFrame {
     private JTextArea listaBiglietti;
     private JComboBox comboBiglietti;
     private JButton scaricaButton;
+    private JButton aggiungiCambiaImmagineButton;
 
     public GUILogin() {
 
@@ -137,12 +141,12 @@ public class GUILogin extends JFrame {
         mailField.setText(utenteLoggato.getEmail());
         passwordField1.setText(utenteLoggato.getPassword());
         handleEsci();
-        handleVisualizzaImmagine();
+        handleVisualizzaCambiaImmagine();
         handleVisualizzaNumEventiPartecipati();
         mostraStoricoBiglietti();
     }
 
-    private void handleVisualizzaImmagine(){
+    private void handleVisualizzaCambiaImmagine(){
         visualizzaImmagineButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -154,7 +158,33 @@ public class GUILogin extends JFrame {
                 }
             }
         });
+
+        aggiungiCambiaImmagineButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String immagine = JOptionPane.showInputDialog(
+                        null,
+                        "Inserisci la nuova immagine come URL:",
+                        "Aggiungi/Modifica immagine",
+                        JOptionPane.QUESTION_MESSAGE
+                );
+                if (immagine != null && !immagine.isBlank()) {
+
+                    JOptionPane.showMessageDialog(null, "Hai inserito: " + immagine);
+                    controllerGestioneProfilo.setImmagineProfilo(utenteLoggato, immagine);
+                    JOptionPane.showMessageDialog(null, "Immagine aggiornata!");
+
+                } else {
+                    JOptionPane.showMessageDialog(null, "Località non inserita o vuota.");
+                }
+            }
+        });
+
     }
+
+
+
+
 
     private void handleVisualizzaNumEventiPartecipati(){
         calcolaNumeroEventiPartecipatiButton.addActionListener(new ActionListener() {
@@ -189,12 +219,25 @@ public class GUILogin extends JFrame {
         //listaBiglietti.append("Biglietti acquistati:\n");
         biglietti.forEach(biglietto -> listaBiglietti.append(biglietto.toString() + "\n"));
         scaricaBiglietto(biglietti);
+        //handleFiltraPerData();
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
     private void scaricaBiglietto(List<Biglietto> biglietti){
         comboBiglietti.removeAllItems();
         for (Biglietto biglietto : biglietti) {
-            comboBiglietti.addItem(controllerGestioneProfilo.toStringBiglietto(biglietto));
+            comboBiglietti.addItem(biglietto);
         }
         scaricaButton.addActionListener(new ActionListener() {
             @Override

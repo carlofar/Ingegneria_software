@@ -60,6 +60,7 @@ public class ProfiloUtente {
 
     public void setImmagine(String immagine){
         this.immagine = immagine;
+        utenteDAO.aggiornaProfilo( this);
     }
 
     public String getImmagine(){

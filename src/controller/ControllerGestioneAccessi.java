@@ -5,14 +5,9 @@ import entity.*;
 
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
 
 public class ControllerGestioneAccessi {
 
-
-    private BigliettoDAO bigliettoDAO = new BigliettoDAO();
-    private EventoDAO eventoDAO = new EventoDAO();
 
 
 
@@ -39,7 +34,7 @@ public class ControllerGestioneAccessi {
         //RICERCHIAMO IL BIGLIETTO CON CODICE = codice NELLA LISTA DI BIGLIETTI DELL'EVENTO SELEZIONATO
 
         Biglietto bigliettoTrovato = e.trovaBiglietto(codice);
-        //bigliettoTrovato.getProprietario == null
+
         if(bigliettoTrovato == null){
             throw new AccessDeniedException("Il codice non è associato all'evento selezionato");
         }
@@ -53,20 +48,20 @@ public class ControllerGestioneAccessi {
 
         if (bigliettoTrovato.verifificaAccesso(e)){
             bigliettoTrovato.marcaComeConsumato();
-            bigliettoTrovato.aggiornaDAO();
             e.aggiungiPartecipante();
             e.aggiornaEntrataDAO();
         }
 
     }
 
-
-    public String visualizzaInformazioniEvento(Evento e){
-        LocalDate data = ((java.sql.Date) e.getData()).toLocalDate();
-        return "Titolo: " + e.getTitolo() + "Data: " + data.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) + ", " + e.getOraInizio();
-
-
-    }
+//
+//    public String visualizzaInformazioniEvento(Evento e){
+//        LocalDate data = e.getData();
+//        //LocalDate data = ((java.sql.Date) e.getData()).toLocalDate();
+//        return "Titolo: " + e.getTitolo() + "Data: " + data.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) + ", " + e.getOraInizio();
+//
+//
+//    }
 
 
 }

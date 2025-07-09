@@ -68,4 +68,8 @@ public class ControllerGestioneProfilo {
 
     }
 
+    public void setImmagineProfilo(ProfiloUtente p, String immagine){
+        p.setImmagine(immagine);
+    }
+
 }
