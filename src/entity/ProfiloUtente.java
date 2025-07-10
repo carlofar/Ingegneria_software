@@ -4,7 +4,6 @@ import dao.BigliettoDAO;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.function.UnaryOperator;
 
 
 public class ProfiloUtente {
@@ -58,12 +57,12 @@ public class ProfiloUtente {
         return email;
     }
 
-    public void setImmagine(String immagine){
+    public void aggiornaImmagine(String immagine){
         this.immagine = immagine;
         utenteDAO.aggiornaProfilo( this);
     }
 
-    public String getImmagine(){
+    public String trovaImmagineProfilo(){
         if(this.immagine == null){
             this.immagine = utenteDAO.getImmagineProfilo(this.email);
         }
@@ -93,7 +92,7 @@ public class ProfiloUtente {
     }
 
 
-    public List<Biglietto> getBiglietti(){
+    public List<Biglietto> listaBigliettiAssociati(){
         //ottimizzazione
         if(biglietti.isEmpty()){
             biglietti = bigliettoDAO.getStoricoBiglietti(this);
@@ -110,9 +109,9 @@ public class ProfiloUtente {
         }
 
         for(Biglietto biglietto : biglietti){
-            System.out.println(biglietto.getEvento().getId());
+            System.out.println(biglietto.infoEvento().getId());
             System.out.println(e.getId());
-            if(biglietto.getEvento().getId().equals(e.getId())){
+            if(biglietto.infoEvento().getId().equals(e.getId())){
                 return true;
             }
         }

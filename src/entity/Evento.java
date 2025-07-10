@@ -69,18 +69,15 @@ public class Evento {
     //getter & setter
 
     public String getId() {
-
         return id;
     }
 
     public void setId(String id){
-
         this.id = id;
     }
 
 
     public int getNumPartecipantiTotali(){
-
         return listaBiglietti.size();
     }
 
@@ -112,7 +109,7 @@ public class Evento {
         return numPartecipantiAttuali;
     }
 
-    public List<Biglietto> getListaBiglietti() {
+    public List<Biglietto> listaBigliettiAssociati() {
         if (listaBiglietti == null){
             return eventoDAO.getBigliettiAssociati(this);
         }
@@ -161,7 +158,6 @@ public class Evento {
         if(this == o) return true;
         if(o == null || this.getClass() != o.getClass()) return false;
         Evento evento = (Evento) o;
-        System.out.println("this:" + this.toString() + "\nother: " + evento.toString());
         return this.titolo.equals(evento.titolo) &&
                 this.data.equals(evento.data) &&
                 this.luogo.equals(evento.luogo);
@@ -169,12 +165,10 @@ public class Evento {
 
     @Override
     public String toString() {
-            //LocalDate data = ((java.sql.Date) this.getData()).toLocalDate();
-            LocalDate data = this.getData();
 
         return  "Titolo: " + titolo +
                 ",  Descrizione: " + descrizione +
-                ",  Data: " + data.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) +
+                ",  Data: " + this.data.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) +
                 ", " + oraInizio +
                 ",  Luogo: " + luogo +
                 ",  Costo: " + costo + "\n";

@@ -1,12 +1,10 @@
 package controller;
 
-import dao.UtenteDAO;
 import entity.CatalogoUtenti;
 import entity.ProfiloUtente;
 import utilities.RegistrationException;
 
 import javax.naming.AuthenticationException;
-import java.util.Scanner;
 
 public class ControllerGestioneAutenticazione {
 
@@ -17,7 +15,7 @@ public class ControllerGestioneAutenticazione {
     public ProfiloUtente RegistraUtente(String nome, String cognome, String eMail, String password,String immagine){
             ProfiloUtente p = new ProfiloUtente(nome,cognome,eMail,password,ProfiloUtente.Ruolo.UTENTE);
             if(immagine != null){
-                p.setImmagine(immagine);
+                p.aggiornaImmagine(immagine);
             }
             CatalogoUtenti.getInstance().aggiungiProfilo(p);
             return p;
@@ -63,7 +61,7 @@ public class ControllerGestioneAutenticazione {
 
     public void checkCredenzialiRegistrzione(String eMail, String password)throws RegistrationException {
 
-        CatalogoUtenti.getInstance().ceckUtenteByEmail(eMail);
+        CatalogoUtenti.getInstance().checkUtenteByEmail(eMail);
         //FARE COSE TESTING CARLO
     }
 

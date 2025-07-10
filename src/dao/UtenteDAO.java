@@ -2,7 +2,6 @@ package dao;
 
 import entity.ProfiloUtente;
 
-import javax.naming.AuthenticationException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -59,7 +58,7 @@ public class UtenteDAO {
         String sql = "UPDATE PROFILOUTENTE SET immagineProfilo = ? WHERE EMAIL = ?";
         try(Connection conn = ConnectionManager.getInstance().getConn();
             PreparedStatement stmt = conn.prepareStatement(sql)){
-            stmt.setString(1,utente.getImmagine());
+            stmt.setString(1,utente.trovaImmagineProfilo());
             stmt.setString(2,utente.getEmail());
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -83,7 +82,7 @@ public class UtenteDAO {
                     stmt.setString(3, utente.getCognome());
                     stmt.setString(4, utente.getPassword());
                     stmt.setString(5, utente.getRuolo().toString());
-                    stmt.setString(6, utente.getImmagine());
+                    stmt.setString(6, utente.trovaImmagineProfilo());
                     //4.Eseguo la query
                     stmt.executeUpdate();
                     //TECNICAMENTE MANCA ANCHE IMMAGINE PROFILO, MA POI NE DISCUTIAMO

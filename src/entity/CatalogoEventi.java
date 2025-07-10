@@ -3,8 +3,6 @@ package entity;
 import dao.EventoDAO;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -36,7 +34,8 @@ public class CatalogoEventi {
 
 
     //PROBLEMATICHE DI ERRORE QUI
-    public List<Evento> getListaEventi(){
+
+    public List<Evento> getEventiAcquistabili(){
 
         if ( listaEventi.isEmpty()){
             listaEventi = eventoDAO.getEventi();
@@ -48,11 +47,6 @@ public class CatalogoEventi {
             if (dataOdierna.minusDays(1).isBefore(evento.getData())) {
                 eventi.add(evento);
             }
-//            if (listaEventi.get(i).getData().after(Date.from(dataOdierna.minusDays(1).atStartOfDay(java.time.ZoneId.systemDefault()).toInstant()))){
-//
-//                eventi.add(listaEventi.get(i));
-//
-//            }
         }
 
         return eventi;
@@ -60,22 +54,18 @@ public class CatalogoEventi {
 
     //PROBLEMATICHE DI ERRORE QUI
     public List<Evento> getEventiOdierni(){
-        List<Evento> eventiOdierni;
-//        if ( listaEventi.isEmpty()){
-//            listaEventi = eventoDAO.getEventi();
-//        }
-        LocalDate dataOdierna = LocalDate.now();
-        eventiOdierni = eventoDAO.filtraPerData(dataOdierna);//POSSIAMO FARLO ANCHE IN LOCALE
-        return eventiOdierni;
+        if ( listaEventi.isEmpty()){
+            listaEventi = eventoDAO.getEventi();
+        }
 
-//        Date dataOdierna = Date.from(LocalDate.now().atStartOfDay(java.time.ZoneId.systemDefault()).toInstant());
-//        List<Evento> eventiOdierni = new ArrayList<>();
-//        for (int i = 0; i < listaEventi.size(); i++) {
-//            if (listaEventi.get(i).getData().equals(dataOdierna)){
-//                eventiOdierni.add(listaEventi.get(i));
-//            }
-//        }
-//        return eventiOdierni;
+        List<Evento> eventiOdierni = new ArrayList<>();
+        LocalDate dataOdierna = LocalDate.now();
+        for (Evento evento : listaEventi) {
+            if (evento.getData().equals(dataOdierna)){
+                eventiOdierni.add(evento);
+            }
+        }
+        return eventiOdierni;
     }
 
 
@@ -83,7 +73,6 @@ public class CatalogoEventi {
         //List<Evento> eventiOdierni = eventoDAO.getEventi();
         if ( listaEventi.isEmpty()){
             listaEventi = eventoDAO.getEventi();
-            return listaEventi;
         }
 
         List<Evento> eventi = new ArrayList<>();
@@ -104,9 +93,7 @@ public class CatalogoEventi {
         List<Evento> eventi = new ArrayList<>();
         for (Evento evento : listaEventi) {
             if (evento.getLuogo().contains(luogo)) {
-
                 eventi.add(evento);
-
             }
         }
         return eventi;

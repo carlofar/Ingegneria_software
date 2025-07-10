@@ -1,10 +1,7 @@
 package controller;
-import dao.BigliettoDAO;
-import dao.EventoDAO;
 import entity.*;
 
 import java.nio.file.AccessDeniedException;
-import java.time.LocalDate;
 
 public class ControllerGestioneAccessi {
 
@@ -41,7 +38,7 @@ public class ControllerGestioneAccessi {
 
         //System.out.println("Biglietto trovato " + bigliettoTrovato.toString());
 
-        if(!bigliettoTrovato.getProprietario().equals(p)){
+        if(!bigliettoTrovato.infoProprietario().equals(p)){
             throw new AccessDeniedException("Il biglietto non è associato al profilo selezionato");
         }
 

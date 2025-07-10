@@ -1,11 +1,7 @@
 package entity;
 import dao.BigliettoDAO;
-import dao.EventoDAO;
 
 import java.nio.file.AccessDeniedException;
-import java.sql.Date;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Objects;
 
 
@@ -48,23 +44,22 @@ public class  Biglietto {
     //getter and setter
 
     public String getCodice() {
-
         return codice;
     }
 
     public Stato getStato() {
-
         return stato;
     }
 
-    public ProfiloUtente getProprietario() {
+
+    public ProfiloUtente infoProprietario() {
         if ( proprietario == null ){
             bigliettoDAO.getProprietario(this);
         }
-        return proprietario;
+        return this.proprietario;
     }
 
-    public Evento getEvento() {
+    public Evento infoEvento() {
         if(evento == null){
             bigliettoDAO.associaEvento(this);
         }
@@ -109,7 +104,6 @@ public class  Biglietto {
     }
 
     public void marcaComeConsumato(){
-
         this.stato = Stato.CONSUMATO;
         bigliettoDAO.aggiornaBiglietto(this);
     }

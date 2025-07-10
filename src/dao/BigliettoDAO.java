@@ -102,8 +102,8 @@ public class BigliettoDAO {
 
             stmt.setString(1, b.getCodice());
             stmt.setString(2, b.getStato().name());
-            stmt.setString(3, b.getProprietario().getEmail());
-            String eventoId = b.getEvento().getId();
+            stmt.setString(3, b.infoProprietario().getEmail());
+            String eventoId = b.infoEvento().getId();
             stmt.setString(4, eventoId);
 
             stmt.executeUpdate();
@@ -138,7 +138,7 @@ public class BigliettoDAO {
         String query = "UPDATE Biglietto SET idEvento = ? WHERE codiceIdentificativo = ?";
         try(Connection conn=ConnectionManager.getInstance().getConn();
             PreparedStatement stmt=conn.prepareStatement(query)){
-            stmt.setString(1, biglietto.getEvento().getId());
+            stmt.setString(1, biglietto.infoEvento().getId());
             stmt.setString(2, biglietto.getCodice());
             stmt.executeUpdate();
         }

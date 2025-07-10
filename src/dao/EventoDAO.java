@@ -119,35 +119,35 @@ public class EventoDAO{
     }
 
     
-    public List<Evento> filtraPerData(LocalDate data){
-        List<Evento> eventi = new ArrayList<>();
-        Date dataSQL = Date.valueOf(data);
-        String query = "SELECT * FROM EVENTO WHERE data = ?";
-        try(Connection conn = ConnectionManager.getInstance().getConn();
-            PreparedStatement stmt = conn.prepareStatement(query)){
-            stmt.setDate(1, dataSQL);
-
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()){
-                LocalDate dataEvento = rs.getDate("data").toLocalDate();
-                Evento e = new Evento(
-                        rs.getString("titolo"),
-                        rs.getString("descrizione"),
-                        dataEvento,
-                        rs.getString("orario"),
-                        rs.getString("luogo"),
-                        rs.getFloat("costo"),
-                        rs.getInt("maxPartecipanti"));
-                eventi.add(e);
-            }
-
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
-
-        return eventi;
-    }
+//    public List<Evento> filtraPerData(LocalDate data){
+//        List<Evento> eventi = new ArrayList<>();
+//        Date dataSQL = Date.valueOf(data);
+//        String query = "SELECT * FROM EVENTO WHERE data = ?";
+//        try(Connection conn = ConnectionManager.getInstance().getConn();
+//            PreparedStatement stmt = conn.prepareStatement(query)){
+//            stmt.setDate(1, dataSQL);
+//
+//            ResultSet rs = stmt.executeQuery();
+//
+//            while (rs.next()){
+//                LocalDate dataEvento = rs.getDate("data").toLocalDate();
+//                Evento e = new Evento(
+//                        rs.getString("titolo"),
+//                        rs.getString("descrizione"),
+//                        dataEvento,
+//                        rs.getString("orario"),
+//                        rs.getString("luogo"),
+//                        rs.getFloat("costo"),
+//                        rs.getInt("maxPartecipanti"));
+//                eventi.add(e);
+//            }
+//
+//        }catch (SQLException e){
+//            e.printStackTrace();
+//        }
+//
+//        return eventi;
+//    }
 
     //METODO SUPERFLUO
 //    private List<Evento> filtraPerLuogo(String luogo){

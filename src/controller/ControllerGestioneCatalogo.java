@@ -13,7 +13,7 @@ public class ControllerGestioneCatalogo {
 
 
     public List<Evento> getEventi(){
-        return CatalogoEventi.getInstance().getListaEventi();
+        return CatalogoEventi.getInstance().getEventiAcquistabili();
     }
 
     public Evento getEvento(String id){

@@ -1,6 +1,5 @@
 package controller;
 import dao.BigliettoDAO;
-import dao.EventoDAO;
 import entity.*;
 import utilities.PaymentException;
 import utilities.TicketException;
@@ -33,7 +32,7 @@ public class ControllerGestioneAcquisto {
             if (!p.trovaBiglietto(e)){
                 Biglietto b = generaBiglietto(p,e);
                 //DA VEDERE
-                System.out.println("Biglietto generato: " + b.toString() + b.getProprietario().toString());
+                System.out.println("Biglietto generato: " + b.toString() + b.infoProprietario().toString());
                 p.aggiungiBiglietto(b);
                 b.salvaBigliettoDAO();
                 e.aggiungiBiglietto(b);

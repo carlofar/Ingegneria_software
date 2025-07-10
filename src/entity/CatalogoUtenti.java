@@ -35,6 +35,7 @@ public class CatalogoUtenti {
 
 
     public List<ProfiloUtente> getListaUtenti(){
+
         return new ArrayList<>(listaUtenti);
     }
 
@@ -46,7 +47,7 @@ public class CatalogoUtenti {
         return rv;
     }
 
-    public void ceckUtenteByEmail (String eMail) throws RegistrationException {
+    public void checkUtenteByEmail(String eMail) throws RegistrationException {
         if(utenteDAO.trovaUtenteByEmail(eMail) != null){
             throw new RegistrationException("La Email è già presente nel sistema");
         }

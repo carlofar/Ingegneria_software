@@ -5,7 +5,6 @@ import entity.*;
 import utilities.ProfileException;
 
 import javax.naming.AuthenticationException;
-import javax.print.Doc;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.List;
@@ -28,7 +27,7 @@ public class ControllerGestioneProfilo {
     }
 
     public List<Biglietto> getStoricoBiglietti(ProfiloUtente p){
-        return p.getBiglietti();
+        return p.listaBigliettiAssociati();
     }
 
     public void mostraDati(ProfiloUtente p, List<Biglietto> biglietti){
@@ -39,8 +38,8 @@ public class ControllerGestioneProfilo {
     }
 
     public String getImmagineProfilo(ProfiloUtente p)throws ProfileException{
-        if(p.getImmagine() != null){
-            return p.getImmagine();
+        if(p.trovaImmagineProfilo() != null){
+            return p.trovaImmagineProfilo();
         }else{
             throw new ProfileException("Non hai un'immagine associata al profilo");
         }
@@ -64,12 +63,12 @@ public class ControllerGestioneProfilo {
         int start = str.indexOf("Biglietto->") + "Biglietto->".length();
         int end = str.indexOf("Evento",start);
         String toStringBiglietto = str.substring(start,end);
-        return toStringBiglietto + " nome evento: " + b.getEvento().getTitolo();
+        return toStringBiglietto + " nome evento: " + b.infoEvento().getTitolo();
 
     }
 
     public void setImmagineProfilo(ProfiloUtente p, String immagine){
-        p.setImmagine(immagine);
+        p.aggiornaImmagine(immagine);
     }
 
 }
