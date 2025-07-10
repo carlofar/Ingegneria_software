@@ -123,4 +123,7 @@ public class  Biglietto {
                 ", stato:" + stato +
                 "   \nEvento Associato: " + evento.toString() + "\n";
     }
+
+
+
 }

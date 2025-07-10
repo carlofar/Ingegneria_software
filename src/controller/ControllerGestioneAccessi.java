@@ -9,7 +9,9 @@ public class ControllerGestioneAccessi {
 
 
     public void effettuaAccesso (String codice, Evento e, ProfiloUtente p) throws AccessDeniedException {
-//        Biglietto b = new Biglietto();
+        //CHECK VALIDAZIONE INPUT
+
+        //        Biglietto b = new Biglietto();
 //        b.setCodice(codice);
 //        boolean trovato = false;
 //        List<Evento> listaEventi = CatalogoEventi.getInstance().getListaEventi();
