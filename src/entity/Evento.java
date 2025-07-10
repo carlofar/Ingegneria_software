@@ -38,8 +38,8 @@ public class Evento {
     }
 
 
-    public Evento(String titolo, String descrizione, Date data, String oraInizio, String luogo, float costo, int maxPartecipanti) {
-        this.id = "EV-" + UUID.randomUUID().toString().substring(0,3) + LocalDateTime.now().hashCode();
+    public Evento(String titolo, String descrizione, LocalDate data, String oraInizio, String luogo, float costo, int maxPartecipanti) {
+
         this.titolo = titolo;
         this.descrizione = descrizione;
         this.data = data;

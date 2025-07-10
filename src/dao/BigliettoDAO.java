@@ -116,6 +116,30 @@ public class BigliettoDAO {
     }
 
 
+    public ProfiloUtente getProprietario(Biglietto b){
+
+        String query = "SELECT P.eMail,P.Nome, P.Cognome, P.password, P.Ruolo, P.immagineProfilo FROM Biglietto B JOIN ProfiloUtente P ON P.eMail=B.utenteEMail " +
+                "WHERE B.codiceIdentificativo = ?";
+        try(Connection conn=ConnectionManager.getInstance().getConn();
+            PreparedStatement stmt=conn.prepareStatement(query)){
+            stmt.setString(1, b.getCodice());
+            ResultSet rs= stmt.executeQuery();
+            if(rs.next()){
+                return new ProfiloUtente(rs.getString("Nome"),rs.getString("Cognome"),rs.getString("eMail"),
+                        rs.getString("password"),ProfiloUtente.Ruolo.valueOf(rs.getString("Ruolo")));
+
+            }
+
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+
+
+        }
+        return null;
+    }
+
+
     //Cambia lo stato del DB, aggiornando l'attributo stato in CONSUMATO in quanto parte del caso d'uso ControlloAccessi
     public void aggiornaBiglietto( Biglietto b){
 

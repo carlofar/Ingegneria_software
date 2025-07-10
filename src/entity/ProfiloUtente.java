@@ -1,6 +1,7 @@
 package entity;
 
 import dao.BigliettoDAO;
+import dao.UtenteDAO;
 
 import java.util.List;
 import java.util.ArrayList;
