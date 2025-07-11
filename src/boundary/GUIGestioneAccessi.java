@@ -11,6 +11,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.nio.file.AccessDeniedException;
+import java.security.MessageDigest;
 import java.util.List;
 
 public class GUIGestioneAccessi extends JFrame{
@@ -49,9 +50,16 @@ public class GUIGestioneAccessi extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 String email = campoEMail.getText();
-                String password = new String(campoPw.getPassword());
+                char[] passwordChars = campoPw.getPassword();
+                String passwordHash;
                 try {
-                    ControllerGestioneAutenticazione.getInstance().login(email, password);
+                    passwordHash = hashPassword(passwordChars);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Errore nella codifica della password.");
+                    return;
+                }
+                try {
+                    ControllerGestioneAutenticazione.getInstance().login(email, passwordHash);
                     JOptionPane.showMessageDialog(null, "Login effettuato!");
                     mailUtente = email;
                     loginPanel.setVisible(false);
@@ -133,6 +141,20 @@ public class GUIGestioneAccessi extends JFrame{
         });
     }
 
+    private String hashPassword(char[] password) throws Exception {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        byte[] passwordBytes = new String(password).getBytes("UTF-8");
+        byte[] hashBytes = md.digest(passwordBytes);
 
+        StringBuilder sb = new StringBuilder();
+        for (byte b : hashBytes) {
+            sb.append(String.format("%02x", b));
+        }
+
+        // Pulisce la password dalla memoria
+        java.util.Arrays.fill(password, '0');
+
+        return sb.toString();
+    }
 
 }

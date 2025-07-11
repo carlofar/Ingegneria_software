@@ -107,12 +107,12 @@ public class Evento {
         return numPartecipantiAttuali;
     }
 
-    public List<Biglietto> listaBigliettiAssociati() {
-        if (listaBiglietti == null){
-            return eventoDAO.getBigliettiAssociati(this);
-        }
-        return listaBiglietti;
-    }
+//    public List<Biglietto> listaBigliettiAssociati() {
+//        if (listaBiglietti == null){
+//            return eventoDAO.getBigliettiAssociati(this);
+//        }
+//        return listaBiglietti;
+//    }
 
     public String getDescrizione() {
         return descrizione;

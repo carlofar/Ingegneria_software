@@ -1,5 +1,6 @@
 package entity;
 import dao.BigliettoDAO;
+import utilities.TicketException;
 
 import java.nio.file.AccessDeniedException;
 import java.util.Objects;
@@ -10,9 +11,7 @@ public class  Biglietto {
     private static final BigliettoDAO bigliettoDAO = new BigliettoDAO();
 
 
-    public void salvaBigliettoDAO() {
-        bigliettoDAO.salvaBiglietto(this);
-    }
+
 
     public enum Stato{
         VALIDO,
@@ -106,6 +105,11 @@ public class  Biglietto {
     public void marcaComeConsumato(){
         this.stato = Stato.CONSUMATO;
         bigliettoDAO.aggiornaBiglietto(this);
+    }
+
+
+    public void salvaBigliettoDAO() throws TicketException {
+        bigliettoDAO.salvaBiglietto(this);
     }
 
     @Override

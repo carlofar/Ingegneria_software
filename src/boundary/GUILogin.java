@@ -10,6 +10,7 @@ import javax.naming.AuthenticationException;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.security.MessageDigest;
 import java.util.List;
 
 public class GUILogin extends JFrame {
@@ -54,7 +55,7 @@ public class GUILogin extends JFrame {
     private JButton visualizzaImmagineButton;
     private JButton calcolaNumeroEventiPartecipatiButton;
     private JTextArea listaBiglietti;
-    private JComboBox comboBiglietti;
+    private JComboBox<DTO> comboBiglietti;
     private JButton scaricaButton;
     private JButton aggiungiCambiaImmagineButton;
 
@@ -73,9 +74,16 @@ public class GUILogin extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String email = campoMailAcc.getText();
-                String password = new String(campoPwAcc.getPassword());
+                char[] passwordChars = campoPwAcc.getPassword();
+                String passwordHash;
                 try {
-                    ControllerGestioneAutenticazione.getInstance().login(email, password);
+                    passwordHash = hashPassword(passwordChars);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Errore di sicurezza nella codifica della password.");
+                    return;
+                }
+                try {
+                    ControllerGestioneAutenticazione.getInstance().login(email, passwordHash);
                     JOptionPane.showMessageDialog(null, "Login effettuato!");
                     tabLogSign.setVisible(false);
                     initTabProfilo();
@@ -94,11 +102,18 @@ public class GUILogin extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String eMail = campoMailReg.getText();
-                String password = new String(campoPwReg.getPassword());
+                char[] passwordChars = campoPwReg.getPassword();
+                String passwordHash;
                 try {
-                    ControllerGestioneAutenticazione.getInstance().checkCredenzialiRegistrzione(eMail, password);
+                    passwordHash = hashPassword(passwordChars);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Errore nella codifica della password.");
+                    return;
+                }
+                try {
+                    ControllerGestioneAutenticazione.getInstance().checkCredenzialiRegistrzione(eMail, passwordHash);
                     tabLogSign.setVisible(false);
-                    handleCompletaRegistrazione(eMail, password);
+                    handleCompletaRegistrazione(eMail, passwordHash);
                 }catch (RegistrationException exR){
                     JOptionPane.showMessageDialog(null, exR.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
                 }
@@ -151,8 +166,8 @@ public class GUILogin extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try{
-                    String eMail = ControllerGestioneAutenticazione.getInstance().getEmailUtente();
-                    JOptionPane.showMessageDialog(null, "Immagine profilo:\n" + ControllerGestioneProfilo.getInstance().trovaImmagineProfilo(eMail) , "Immagine profilo", JOptionPane.INFORMATION_MESSAGE);
+                    //String eMail = ControllerGestioneAutenticazione.getInstance().getEmailUtente();
+                    JOptionPane.showMessageDialog(null, "Immagine profilo:\n" + ControllerGestioneProfilo.getInstance().trovaImmagineProfilo() , "Immagine profilo", JOptionPane.INFORMATION_MESSAGE);
                 }catch (ProfileException exP){
                     JOptionPane.showMessageDialog(null, exP.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
                 }
@@ -272,7 +287,21 @@ public class GUILogin extends JFrame {
     }
 
 
+    private String hashPassword(char[] password) throws Exception {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        byte[] passwordBytes = new String(password).getBytes("UTF-8");
+        byte[] hashBytes = md.digest(passwordBytes);
 
+        StringBuilder sb = new StringBuilder();
+        for (byte b : hashBytes) {
+            sb.append(String.format("%02x", b));
+        }
+
+        // Pulisci array password
+        java.util.Arrays.fill(password, '0');
+
+        return sb.toString();
+    }
 
 
 }

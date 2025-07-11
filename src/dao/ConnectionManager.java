@@ -18,7 +18,7 @@ public class ConnectionManager {
 
     //instance rappresenta l'unica istanza della classe secondo il pattern singleton
     private static ConnectionManager instance;
-    private Connection conn;
+    //private Connection conn;
 
 
     //Il costruttore privato carica il driver JDBC MySQL(necessario prima di usare DriverManager)
@@ -47,8 +47,8 @@ public class ConnectionManager {
     public Connection getConn() throws SQLException{
         return DriverManager.getConnection(URL,USER,PASSWORD);
     }
-
-    public void closeConn()throws SQLException{
-            conn.close();
-    }
+//
+//    public void closeConn()throws SQLException{
+//            conn.close();
+//    }
 }

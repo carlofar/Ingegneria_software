@@ -1,6 +1,6 @@
 package controller;
 
-import dto.DTO;
+//import dto.DTO;
 import entity.CatalogoUtenti;
 import entity.ProfiloUtente;
 import utilities.RegistrationException;
@@ -76,9 +76,9 @@ public class ControllerGestioneAutenticazione {
     }
 
 
-    public DTO getProfiloLoggato() {
-        return new DTO("utente",utenteLoggato.getNome(),utenteLoggato.getCognome(),utenteLoggato.getEmail());
-    }
+//    public DTO getProfiloLoggato() {
+//        return new DTO("utente",utenteLoggato.getNome(),utenteLoggato.getCognome(),utenteLoggato.getEmail());
+//    }
 
     public String getNomeUtente() {
         return utenteLoggato.getNome();

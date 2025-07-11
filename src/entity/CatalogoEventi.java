@@ -77,7 +77,8 @@ public class CatalogoEventi {
         List<Evento> eventi = new ArrayList<>();
         for (Evento evento : listaEventi) {
             LocalDate dataEvento = evento.getData();
-            if (data.minusDays(1).isBefore(dataEvento)) {
+            LocalDate dataOdierna = LocalDate.now();
+            if (data.minusDays(1).isBefore(dataEvento) && dataOdierna.minusDays(1).isBefore(evento.getData())) {
                 eventi.add(evento);
             }
         }
@@ -90,8 +91,9 @@ public class CatalogoEventi {
             listaEventi = eventoDAO.getEventi();
         }
         List<Evento> eventi = new ArrayList<>();
+        LocalDate dataOdierna = LocalDate.now();
         for (Evento evento : listaEventi) {
-            if (evento.getLuogo().contains(luogo)) {
+            if (evento.getLuogo().contains(luogo) && dataOdierna.minusDays(1).isBefore(evento.getData())) {
                 eventi.add(evento);
             }
         }

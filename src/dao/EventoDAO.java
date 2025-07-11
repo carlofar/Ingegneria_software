@@ -54,22 +54,11 @@ public class EventoDAO{
                     e.setMaxPartecipanti(rs.getInt("maxPartecipanti"));
                     e.setNumPartecipantiAttuali(rs.getInt("numPartecipantiAttuali"));
                     eventi.add(e);
-//                    String id = rs.getString("idEvento");
-//                    Evento e = new Evento(
-//                            rs.getString("titolo"),
-//                            rs.getString("descrizione"),
-//                            rs.getDate("data"),
-//                            rs.getString("orario"),
-//                            rs.getString("luogo"),
-//                            rs.getFloat("costo"),
-//                            rs.getInt("maxPartecipanti"));
-//                            rs.getInt("numPartecipantiAttuali");
-//
-//                    eventi.add(e);
+
                 }
 
         }catch (SQLException e){
-            e.printStackTrace();
+            System.err.println("Errore nella query");
         }
 
         return eventi;
@@ -79,24 +68,25 @@ public class EventoDAO{
     // METODO DI AGGIORNAMENTO DEL DB IN CASO DI CREAZIONE DI UN EVENTO DA PARTE DELL'AMMINISTRATORE
     // METODO EFFETTUATO SOLO PER INSERIRE MANUALMENTE IN DB GLI EVENTI
     public void salvaEvento(Evento evento){
-        String query = "INSERT INTO EVENTO(TITOLO, DESCRIZIONE, DATA, ORARIO, LUOGO, COSTO, MAXPARTECIPANTI) VALUES (?,?,?,?,?,?,?)";
+        String query = "INSERT INTO EVENTO(idEvento, TITOLO, DESCRIZIONE, DATA, ORARIO, LUOGO, COSTO, MAXPARTECIPANTI) VALUES (?,?,?,?,?,?,?,?)";
         try(Connection conn = ConnectionManager.getInstance().getConn();
             PreparedStatement stmt = conn.prepareStatement(query)){
 
-            stmt.setString(1, evento.getTitolo());
-            stmt.setString(2, evento.getDescrizione());
+            stmt.setString(1, evento.getId());
+            stmt.setString(2, evento.getTitolo());
+            stmt.setString(3, evento.getDescrizione());
             Date sqlDate = Date.valueOf(evento.getData());
-            stmt.setDate(3, sqlDate);
-            stmt.setString(4, evento.getOraInizio());
-            stmt.setString(5, evento.getLuogo());
-            stmt.setFloat(6, evento.getCosto());
-            stmt.setInt(7, evento.getMaxPartecipanti());
+            stmt.setDate(4, sqlDate);
+            stmt.setString(5, evento.getOraInizio());
+            stmt.setString(6, evento.getLuogo());
+            stmt.setFloat(7, evento.getCosto());
+            stmt.setInt(8, evento.getMaxPartecipanti());
 
             stmt.executeUpdate();
 
 
         }catch (SQLException e){
-            e.printStackTrace();
+            System.err.println("Errore nella query");
         }
     }
 
@@ -113,7 +103,7 @@ public class EventoDAO{
             stmt.executeUpdate();
 
         }catch(SQLException e){
-            e.printStackTrace();
+            System.err.println("Errore nella query");
         }
 
     }
@@ -201,7 +191,7 @@ public class EventoDAO{
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Errore nella query");
         }
 
         return biglietti;

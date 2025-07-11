@@ -48,7 +48,7 @@ public class UtenteDAO {
             //Poichè rs.next() puo lanciare un'eccezione, andiamo a catcharla
             //Si potrebbe fare di meglio
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Errore nella query");
         }
         return null;
 
@@ -62,7 +62,7 @@ public class UtenteDAO {
             stmt.setString(2,utente.getEmail());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Errore nella query");
         }
     }
 
@@ -87,7 +87,7 @@ public class UtenteDAO {
                     stmt.executeUpdate();
                     //TECNICAMENTE MANCA ANCHE IMMAGINE PROFILO, MA POI NE DISCUTIAMO
         }catch (SQLException e){
-            e.printStackTrace();
+            System.err.println("Errore nella query");
         }
     }
 
@@ -102,7 +102,7 @@ public class UtenteDAO {
                 return rs.getString("immagineProfilo");
             }
         }catch (SQLException e){
-            e.printStackTrace();
+            System.err.println("Errore nella query");
         }
         return null;
     }

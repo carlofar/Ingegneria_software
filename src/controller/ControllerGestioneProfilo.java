@@ -72,14 +72,14 @@ public class ControllerGestioneProfilo {
     }
 
 
-    public void mostraDati(ProfiloUtente p, List<Biglietto> biglietti){
-        System.out.println(p.toString());
-        for (Biglietto biglietto : biglietti) {
-            System.out.println(biglietto.toString());
-        }
-    }
+//    public void mostraDati(ProfiloUtente p, List<Biglietto> biglietti){
+//        System.out.println(p.toString());
+//        for (Biglietto biglietto : biglietti) {
+//            System.out.println(biglietto.toString());
+//        }
+//    }
 
-    public String trovaImmagineProfilo(String eMail)throws ProfileException{
+    public String trovaImmagineProfilo()throws ProfileException{
 
         if(utenteLoggato.trovaImmagineProfilo() != null){
             return utenteLoggato.trovaImmagineProfilo();

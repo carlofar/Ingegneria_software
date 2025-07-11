@@ -4,6 +4,8 @@ package dao;
 import entity.Biglietto;
 import entity.Evento;
 import entity.ProfiloUtente;
+import utilities.TicketException;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,7 +28,7 @@ public class BigliettoDAO {
 
 
         try(Connection conn = ConnectionManager.getInstance().getConn();
-            PreparedStatement stmt = conn.prepareStatement(query);
+            PreparedStatement stmt = conn.prepareStatement(query)
         ){
             stmt.setString(1, codice);
             ResultSet rs = stmt.executeQuery();
@@ -50,7 +52,7 @@ public class BigliettoDAO {
             }
 
         }catch (SQLException e){
-            e.printStackTrace();
+            System.err.println("Errore nella query");
         }
         return b;
     }
@@ -87,13 +89,13 @@ public class BigliettoDAO {
 
         }
         catch (SQLException e){
-            e.printStackTrace();
+            System.err.println("Errore nella query");
         }
         return biglietti;
     }
 
 
-    public void salvaBiglietto(Biglietto b){
+    public void salvaBiglietto(Biglietto b) throws TicketException {
 
         String query = "INSERT INTO Biglietto(codiceIdentificativo, stato, utenteEmail, idEvento ) VALUES (?,?,?,?)";
 
@@ -109,7 +111,8 @@ public class BigliettoDAO {
             stmt.executeUpdate();
 
         }catch (SQLException e){
-            e.printStackTrace();
+            throw new TicketException("Errore nel salvataggio del biglietto");
+            //e.printStackTrace();
         }
 
 
@@ -132,7 +135,7 @@ public class BigliettoDAO {
 
         }
         catch(SQLException e) {
-            e.printStackTrace();
+            System.err.println("Errore nella query");
 
 
         }
@@ -151,7 +154,7 @@ public class BigliettoDAO {
             stmt.executeUpdate();
         }
         catch(SQLException e) {
-            e.printStackTrace();
+            System.err.println("Errore nella query");
         }
 
     }
@@ -167,7 +170,7 @@ public class BigliettoDAO {
             stmt.executeUpdate();
         }
         catch(SQLException e) {
-            e.printStackTrace();
+            System.err.println("Errore nella query");
         }
 
     }
