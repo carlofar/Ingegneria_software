@@ -1,10 +1,10 @@
 package boundary;
 
+
 import controller.ControllerGestioneAccessi;
 import controller.ControllerGestioneAutenticazione;
 import controller.ControllerGestioneCatalogo;
-import entity.Evento;
-import entity.ProfiloUtente;
+import dto.DTO;
 
 import javax.naming.AuthenticationException;
 import javax.swing.*;
@@ -14,11 +14,12 @@ import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 public class GUIGestioneAccessi extends JFrame{
-    ControllerGestioneCatalogo controllerGestioneCatalogo = new ControllerGestioneCatalogo();
-    ControllerGestioneAccessi controllerGestioneAccessi = new ControllerGestioneAccessi();
-    ControllerGestioneAutenticazione controllerGestioneAutenticazione = new ControllerGestioneAutenticazione();
+//    ControllerGestioneCatalogo controllerGestioneCatalogo = new ControllerGestioneCatalogo();
+//    ControllerGestioneAccessi controllerGestioneAccessi = new ControllerGestioneAccessi();
+//    ControllerGestioneAutenticazione controllerGestioneAutenticazione = new ControllerGestioneAutenticazione();
 
-    private ProfiloUtente utenteLoggato;
+    //private ProfiloUtente utenteLoggato;
+    private String mailUtente;
     private JPanel mainPanel;
     private JPanel panelEventi;
     private JTextArea areaEventi;
@@ -34,27 +35,27 @@ public class GUIGestioneAccessi extends JFrame{
 
 
     public GUIGestioneAccessi(){
-
-        initLogin();
-
-        //initEventi();
-
+        initMainPanel();
     }
 
 
-    private void initLogin(){
+    private void initMainPanel(){
+        assert loginPanel != null;
         loginPanel.setVisible(true);
+        assert panelEventi != null;
         panelEventi.setVisible(false);
+        assert accediButton != null;
         accediButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String email = campoEMail.getText();
                 String password = new String(campoPw.getPassword());
                 try {
-                    utenteLoggato = controllerGestioneAutenticazione.login(email, password);
+                    ControllerGestioneAutenticazione.getInstance().login(email, password);
                     JOptionPane.showMessageDialog(null, "Login effettuato!");
+                    mailUtente = email;
                     loginPanel.setVisible(false);
-                    initEventi();
+                    initPanelEventi();
 //                    JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(mainPanel);
 //                    frame.dispose();
                     //NON SI SPEGNE IL SISTEMA!
@@ -66,19 +67,18 @@ public class GUIGestioneAccessi extends JFrame{
     }
 
 
-    private void initEventi(){
+    private void initPanelEventi(){
         panelEventi.setVisible(true);
-        List<Evento> eventi = controllerGestioneCatalogo.getEventiOdierni();
+        List<DTO> eventi = ControllerGestioneCatalogo.getInstance().getEventiOdierniDTO();
         areaEventi.setText("");
-        for (Evento evento : eventi) {
+        for (DTO evento : eventi) {
             areaEventi.append(evento.toString() + "\n");
         }
 
         assert comboEventi != null;
         comboEventi.removeAllItems();
-        for (Evento evento : eventi) {
+        for (DTO evento : eventi) //noinspection unchecked
             comboEventi.addItem(evento);
-        }
 
         verificaBiglietto();
 
@@ -89,12 +89,12 @@ public class GUIGestioneAccessi extends JFrame{
         verificaBigliettoButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Evento e = (Evento) comboEventi.getSelectedItem();
+                DTO evento = (DTO) comboEventi.getSelectedItem();
                 String codiceInserito = JOptionPane.showInputDialog(null, "Inserisci il codice biglietto da verificare","Biglietto da verificare",JOptionPane.QUESTION_MESSAGE);
                 if(codiceInserito != null) {
                     try {
-                        assert e != null;
-                        controllerGestioneAccessi.effettuaAccesso(codiceInserito, e, utenteLoggato);
+                        assert evento != null;
+                        ControllerGestioneAccessi.getInstance().effettuaAccesso(codiceInserito, evento, mailUtente);
                         JOptionPane.showMessageDialog(null,"Accesso effettuato con successo!", "Informazione", JOptionPane.INFORMATION_MESSAGE);
                     }catch (AccessDeniedException exA){
                         JOptionPane.showMessageDialog(null, exA.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);

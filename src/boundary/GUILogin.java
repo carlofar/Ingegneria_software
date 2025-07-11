@@ -1,11 +1,8 @@
 package boundary;
 
 import controller.ControllerGestioneAutenticazione;
-import controller.ControllerGestioneCatalogo;
 import controller.ControllerGestioneProfilo;
-import entity.Biglietto;
-import entity.Evento;
-import entity.ProfiloUtente;
+import dto.DTO;
 import utilities.ProfileException;
 import utilities.RegistrationException;
 
@@ -16,11 +13,11 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 public class GUILogin extends JFrame {
-    private static final ControllerGestioneAutenticazione controllerGestioneAutenticazione = new ControllerGestioneAutenticazione();
-    private static final ControllerGestioneProfilo controllerGestioneProfilo = new ControllerGestioneProfilo();
-    private static final ControllerGestioneCatalogo controllerGestioneCatalogo = new ControllerGestioneCatalogo();
+//    private static final ControllerGestioneAutenticazione controllerGestioneAutenticazione = new ControllerGestioneAutenticazione();
+//    private static final ControllerGestioneProfilo controllerGestioneProfilo = new ControllerGestioneProfilo();
+//    private static final ControllerGestioneCatalogo controllerGestioneCatalogo = new ControllerGestioneCatalogo();
 
-    private ProfiloUtente utenteLoggato;
+    //private ProfiloUtente utenteLoggato;
     private JPanel mainPanel;
     private JPanel tabLogin;
     private JPanel tabSignIn;
@@ -62,15 +59,11 @@ public class GUILogin extends JFrame {
     private JButton aggiungiCambiaImmagineButton;
 
     public GUILogin() {
-
-        initInterface();
-
-
-
+        initMainPanel();
     }
 
 
-    private void initInterface(){
+    private void initMainPanel(){
         handleAccesso();
         handleRegistrazione();
     }
@@ -82,10 +75,10 @@ public class GUILogin extends JFrame {
                 String email = campoMailAcc.getText();
                 String password = new String(campoPwAcc.getPassword());
                 try {
-                    utenteLoggato = controllerGestioneAutenticazione.login(email, password);
+                    ControllerGestioneAutenticazione.getInstance().login(email, password);
                     JOptionPane.showMessageDialog(null, "Login effettuato!");
                     tabLogSign.setVisible(false);
-                    initProfilo();
+                    initTabProfilo();
 //                    JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(mainPanel);
 //                    frame.dispose();
                     //NON SI SPEGNE IL SISTEMA!
@@ -103,9 +96,9 @@ public class GUILogin extends JFrame {
                 String eMail = campoMailReg.getText();
                 String password = new String(campoPwReg.getPassword());
                 try {
-                    controllerGestioneAutenticazione.checkCredenzialiRegistrzione(eMail, password);
+                    ControllerGestioneAutenticazione.getInstance().checkCredenzialiRegistrzione(eMail, password);
                     tabLogSign.setVisible(false);
-                    handleCompletaRegistrazine(eMail, password);
+                    handleCompletaRegistrazione(eMail, password);
                 }catch (RegistrationException exR){
                     JOptionPane.showMessageDialog(null, exR.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
                 }
@@ -114,7 +107,7 @@ public class GUILogin extends JFrame {
         });
     }
 
-    private void handleCompletaRegistrazine(String eMail, String password){
+    private void handleCompletaRegistrazione(String eMail, String password){
         panelReg.setVisible(true);
         registraButton.addActionListener(new ActionListener() {
             @Override
@@ -122,37 +115,44 @@ public class GUILogin extends JFrame {
                 String nome = campoNomeReg.getText();
                 String cognome = campoCognomeReg.getText();
                 String immagine = campoImmagineReg.getText();
-                utenteLoggato = controllerGestioneAutenticazione.RegistraUtente(nome,cognome,eMail,password,immagine);
+                if(immagine.isBlank()){
+                    immagine = null;
+                }
+                if(nome.isBlank() || cognome.isBlank()){
+                    JOptionPane.showMessageDialog(null, "Inserire i campi nome e cognome!");
+                    return;
+                }
+                ControllerGestioneAutenticazione.getInstance().RegistraUtente(nome,cognome,eMail,password,immagine);
                 JOptionPane.showMessageDialog(null, "Registrazione effettuata!");
                 panelReg.setVisible(false);
-                initProfilo();
+                initTabProfilo();
 //                JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(mainPanel);
 //                frame.dispose();
             }
         });
     }
 
-    private void initProfilo() {
+    private void initTabProfilo() {
 
         tabProfilo.setVisible(true);
-        assert utenteLoggato != null;
-        nameField.setText(utenteLoggato.getNome());
-        surnameField.setText(utenteLoggato.getCognome());
-        mailField.setText(utenteLoggato.getEmail());
-        passwordField1.setText(utenteLoggato.getPassword());
+        ControllerGestioneAutenticazione controllerGestioneAutenticazione = ControllerGestioneAutenticazione.getInstance();
+        nameField.setText(controllerGestioneAutenticazione.getNomeUtente());
+        surnameField.setText(controllerGestioneAutenticazione.getCognomeUtente());
+        mailField.setText(controllerGestioneAutenticazione.getEmailUtente());
+        passwordField1.setText("*********");
         handleEsci();
-        handleVisualizzaCambiaImmagine();
+        tabVisualizzaCambiaImmagine();
         handleVisualizzaNumEventiPartecipati();
         mostraStoricoBiglietti();
     }
 
-    private void handleVisualizzaCambiaImmagine(){
+    private void tabVisualizzaCambiaImmagine(){
         visualizzaImmagineButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try{
-
-                    JOptionPane.showMessageDialog(null, "Immagine profilo:\n" + controllerGestioneProfilo.getImmagineProfilo(utenteLoggato) , "Immagine profilo", JOptionPane.INFORMATION_MESSAGE);
+                    String eMail = ControllerGestioneAutenticazione.getInstance().getEmailUtente();
+                    JOptionPane.showMessageDialog(null, "Immagine profilo:\n" + ControllerGestioneProfilo.getInstance().trovaImmagineProfilo(eMail) , "Immagine profilo", JOptionPane.INFORMATION_MESSAGE);
                 }catch (ProfileException exP){
                     JOptionPane.showMessageDialog(null, exP.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
                 }
@@ -171,7 +171,8 @@ public class GUILogin extends JFrame {
                 if (immagine != null && !immagine.isBlank()) {
 
                     JOptionPane.showMessageDialog(null, "Hai inserito: " + immagine);
-                    controllerGestioneProfilo.setImmagineProfilo(utenteLoggato, immagine);
+
+                    ControllerGestioneProfilo.getInstance().setImmagineProfilo(immagine);
                     JOptionPane.showMessageDialog(null, "Immagine aggiornata!");
 
                 } else {
@@ -190,7 +191,7 @@ public class GUILogin extends JFrame {
         calcolaNumeroEventiPartecipatiButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int numEventi = controllerGestioneProfilo.calcolaNumEventiPartecipati(utenteLoggato);
+                int numEventi = ControllerGestioneProfilo.getInstance().calcolaNumEventiPartecipati();
                 if(numEventi == 0){
                     JOptionPane.showMessageDialog(null, "Non hai partecipato a nessun evento!");
 
@@ -214,10 +215,13 @@ public class GUILogin extends JFrame {
 
 
     private void mostraStoricoBiglietti(){
-        List<Biglietto> biglietti = controllerGestioneProfilo.getStoricoBiglietti(utenteLoggato);
+        List<DTO> biglietti = ControllerGestioneProfilo.getInstance().getStoricoBigliettiDTO();
         listaBiglietti.setText("");
         //listaBiglietti.append("Biglietti acquistati:\n");
-        biglietti.forEach(biglietto -> listaBiglietti.append(biglietto.toString() + "\n"));
+        for (DTO biglietto : biglietti) {
+            listaBiglietti.append(biglietto.toString() + "\n");
+        }
+
         scaricaBiglietto(biglietti);
         //handleFiltraPerData();
     }
@@ -234,17 +238,17 @@ public class GUILogin extends JFrame {
 
 
 
-    private void scaricaBiglietto(List<Biglietto> biglietti){
+    private void scaricaBiglietto(List<DTO> biglietti){
         comboBiglietti.removeAllItems();
-        for (Biglietto biglietto : biglietti) {
+        for (DTO biglietto : biglietti) {
             comboBiglietti.addItem(biglietto);
         }
         scaricaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Biglietto biglietto = (Biglietto) comboBiglietti.getSelectedItem();
+                DTO biglietto = (DTO) comboBiglietti.getSelectedItem();
                 assert biglietto != null;
-                controllerGestioneProfilo.scaricaBiglietto(biglietto);
+                ControllerGestioneProfilo.getInstance().scaricaBiglietto(biglietto);
                 JOptionPane.showMessageDialog(null, "Biglietto scaricato:\n" + biglietto.toString());
             }
         });

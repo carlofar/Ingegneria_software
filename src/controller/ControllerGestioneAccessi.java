@@ -1,36 +1,32 @@
 package controller;
+import dto.DTO;
 import entity.*;
 
+import javax.naming.AuthenticationException;
 import java.nio.file.AccessDeniedException;
 
 public class ControllerGestioneAccessi {
 
+    private static ControllerGestioneAccessi instance;
+    private ControllerGestioneAccessi(){}
+    public static ControllerGestioneAccessi getInstance(){
+        if(instance == null){
+            instance = new ControllerGestioneAccessi();
+        }
+        return instance;
+    }
 
 
 
-    public void effettuaAccesso (String codice, Evento e, ProfiloUtente p) throws AccessDeniedException {
+    public void effettuaAccesso (String codice, DTO evento, String mailUtente) throws AccessDeniedException {
         //CHECK VALIDAZIONE INPUT
-
-        //        Biglietto b = new Biglietto();
-//        b.setCodice(codice);
-//        boolean trovato = false;
-//        List<Evento> listaEventi = CatalogoEventi.getInstance().getListaEventi();
-//        //RICERCO SE IL BIGLIETTO ESISTE CON CODICE = codice
-//        for (int i = 0; i < listaEventi.size(); i++) {
-//            for (int j = 0; j < listaEventi.get(i).getListaBiglietti().size(); j++) {
-//                if (CatalogoEventi.getInstance().getListaEventi().get(i).getListaBiglietti().get(j).equals(b)){
-//                    Biglietto b1 = CatalogoEventi.getInstance().getListaEventi().get(i).getListaBiglietti().get(j);
-//                    trovato = true;
-//                }
-//            }
-//        }
-//
-//        if (!trovato){
-//            throw new AccessDeniedException("Il codice non è associato a nessun evento");
-//        }
-
-        //IL BIGLIETTO ESISTE
-        //RICERCHIAMO IL BIGLIETTO CON CODICE = codice NELLA LISTA DI BIGLIETTI DELL'EVENTO SELEZIONATO
+        ProfiloUtente p = null;
+        try {
+            p = CatalogoUtenti.getInstance().trovaUtenteByEmail(mailUtente);
+        } catch (AuthenticationException e) {
+            System.out.println("Errore: " + e.getMessage());
+        }
+        Evento e = CatalogoEventi.getInstance().getEvento(evento.getCampoInPos(1));
 
         Biglietto bigliettoTrovato = e.trovaBiglietto(codice);
 

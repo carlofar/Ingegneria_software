@@ -4,8 +4,8 @@ package boundary;
 import controller.ControllerGestioneAcquisto;
 import controller.ControllerGestioneAutenticazione;
 import controller.ControllerGestioneCatalogo;
-import entity.Evento;
-import entity.ProfiloUtente;
+import dto.DTO;
+
 import utilities.PaymentException;
 import utilities.TicketException;
 
@@ -21,11 +21,12 @@ import java.util.List;
 
 public class GUIAcquisto extends JFrame{
 
-    private static final ControllerGestioneAutenticazione controllerGestioneAutenticazione = new ControllerGestioneAutenticazione();
-    private static final ControllerGestioneAcquisto controllerGestioneAcquisto = new ControllerGestioneAcquisto();
-    private static final ControllerGestioneCatalogo controllerGestioneCatalogo = new ControllerGestioneCatalogo();
-    private ProfiloUtente utenteLoggato;
+    //private static final ControllerGestioneAutenticazione controllerGestioneAutenticazione = new ControllerGestioneAutenticazione();
+    //private static final ControllerGestioneAcquisto controllerGestioneAcquisto = new ControllerGestioneAcquisto();
+    //private static final ControllerGestioneCatalogo controllerGestioneCatalogo = new ControllerGestioneCatalogo();
+    //private DTO utenteLoggato;
 
+    private String mailUtente;
     private JPanel mainPanel;
     private JPanel loginPanel;
     private JPanel EventPanel;
@@ -34,12 +35,12 @@ public class GUIAcquisto extends JFrame{
     private JButton loginButton;
     private JLabel labelEmail;
     private JLabel labelPw;
-    private JComboBox<Evento> comboEventi;
+    private JComboBox<DTO> comboEventi;
     private JTextArea areaEventi;
     private JScrollPane scrollEventi;
     private JButton bottoneAcquista;
     private JTextField dataTextField;
-    private JTextField localitàTextField;
+    private JTextField localitaTextField;
 
     public GUIAcquisto() {
         handleLogin();
@@ -59,10 +60,11 @@ public class GUIAcquisto extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 String email = campoEMail.getText();
                 String password = new String(campoPw.getPassword());
-
                 try {
-                    utenteLoggato = controllerGestioneAutenticazione.login(email, password);
-                    JOptionPane.showMessageDialog(null, "Login effettuato!");
+                    ControllerGestioneAutenticazione.getInstance().login(email, password);
+                    mailUtente = email;
+                    //utenteLoggato = controllerGestioneAutenticazione.login(email, password);
+                    JOptionPane.showMessageDialog(null, "Login effettuato");
                     loginPanel.setVisible(false);
                 }catch (AuthenticationException authEx){
                     JOptionPane.showMessageDialog(null, authEx.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
@@ -82,17 +84,31 @@ public class GUIAcquisto extends JFrame{
     }
 
     private void caricaEventi(){
-        List<Evento> eventi = controllerGestioneCatalogo.getEventi();
-        areaEventi.setText("");
-        comboEventi.removeAllItems();
-        for (Evento evento : eventi) {
-            comboEventi.addItem(evento);
-            areaEventi.append(evento.toString() + "\n");
-        }
+//        List<Evento> eventi = controllerGestioneCatalogo.getEventi();
+//        areaEventi.setText("");
+//        comboEventi.removeAllItems();
+//        for (Evento evento : eventi) {
+//            comboEventi.addItem(evento);
+//            areaEventi.append(evento.toString() + "\n");
+//        }
+
+        List<DTO> eventi = ControllerGestioneCatalogo.getInstance().getEventiDTO();
+        popolaEventi(eventi);
+
         handleFiltraPerData();
         handleFiltraPerLocalita();
     }
 
+    private void popolaEventi(List<DTO> eventi){
+        areaEventi.setText("");
+        comboEventi.removeAllItems();
+
+        for (DTO dto : eventi) {
+            comboEventi.addItem(dto);  // contiene solo stringhe
+            areaEventi.append(dto.toString() + "\n");
+        }
+
+    }
     private void handleFiltraPerData(){
         dataTextField.setEnabled(true);
         //dataTextField.setForeground(Color.BLACK);
@@ -129,19 +145,19 @@ public class GUIAcquisto extends JFrame{
                         LocalDate data = LocalDate.of(anno, mese, giorno);
                         JOptionPane.showMessageDialog(null, "Data inserita: " + data);
 
-
-                        List<Evento> eventiFiltrati = controllerGestioneCatalogo.filtraEventiPerData(data);
+                        List<DTO> eventiFiltrati = ControllerGestioneCatalogo.getInstance().filtraPerDataDTO(data);
+                        //List<Evento> eventiFiltrati = controllerGestioneCatalogo.filtraEventiPerData(data);
 
                         if (eventiFiltrati.isEmpty()) {
                             JOptionPane.showMessageDialog(null, "Nessun evento trovato.");
-                            return;
                         }else{
-                            areaEventi.setText("");
-                            comboEventi.removeAllItems();
-                            for (Evento evento : eventiFiltrati) {
-                                areaEventi.append(evento.toString() + "\n");
-                                comboEventi.addItem(evento);
-                            }
+                            popolaEventi(eventiFiltrati);
+//                            areaEventi.setText("");
+//                            comboEventi.removeAllItems();
+//                            for (Evento evento : eventiFiltrati) {
+//                                areaEventi.append(evento.toString() + "\n");
+//                                comboEventi.addItem(evento);
+//                            }
                         }
 
 
@@ -155,7 +171,7 @@ public class GUIAcquisto extends JFrame{
 
 
     private void handleFiltraPerLocalita(){
-        localitàTextField.addMouseListener(new MouseAdapter() {
+        localitaTextField.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 String localita = JOptionPane.showInputDialog(
@@ -168,17 +184,19 @@ public class GUIAcquisto extends JFrame{
                 if (localita != null && !localita.isBlank()) {
 
                     JOptionPane.showMessageDialog(null, "Hai inserito: " + localita);
-                    List<Evento> eventiFiltrati = controllerGestioneCatalogo.filtraEventiPerLuogo(localita);
+                    List<DTO> eventiFiltrati = ControllerGestioneCatalogo.getInstance().filtraPerLuogoDTO(localita);
+                    //List<Evento> eventiFiltrati = controllerGestioneCatalogo.filtraEventiPerLuogo(localita);
                     if (eventiFiltrati.isEmpty()) {
                         JOptionPane.showMessageDialog(null, "Nessun evento trovato.");
                         return;
                     }
-                    areaEventi.setText("");
-                    comboEventi.removeAllItems();
-                    for (Evento evento : eventiFiltrati) {
-                        areaEventi.append(evento.toString() + "\n");
-                        comboEventi.addItem(evento);
-                    }
+                    popolaEventi(eventiFiltrati);
+//                    areaEventi.setText("");
+//                    comboEventi.removeAllItems();
+//                    for (Evento evento : eventiFiltrati) {
+//                        areaEventi.append(evento.toString() + "\n");
+//                        comboEventi.addItem(evento);
+//                    }
 
                 } else {
                     JOptionPane.showMessageDialog(null, "Località non inserita o vuota.");
@@ -191,31 +209,29 @@ public class GUIAcquisto extends JFrame{
 
 
 
-
-
-
-
-
     private void handleAcquista(){
         bottoneAcquista.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Evento evento = (Evento) comboEventi.getSelectedItem();
-                assert evento != null;
-                try{
-                    controllerGestioneAcquisto.verificaDisponibilita(evento);
-                    //int conferma = JOptionPane.showConfirmDialog(null, "Vuoi acquistare il biglietto per " + evento.getTitolo() + "?", "Conferma", JOptionPane.YES_NO_OPTION);
-                } catch (TicketException ex) {
-                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                int conferma = JOptionPane.showConfirmDialog(null, "Vuoi acquistare il biglietto per " + evento.getTitolo() + "?", "Conferma", JOptionPane.YES_NO_OPTION);
+
+                DTO evento = (DTO) comboEventi.getSelectedItem();
+                if(evento == null){ return;}
+
+//                try{
+//                    ControllerGestioneAcquisto.getInstance().getEventoFromDTO(evento);
+//                    //int conferma = JOptionPane.showConfirmDialog(null, "Vuoi acquistare il biglietto per " + evento.getTitolo() + "?", "Conferma", JOptionPane.YES_NO_OPTION);
+//                } catch (TicketException ex) {
+//                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+//                    return;
+//                }
+                int conferma = JOptionPane.showConfirmDialog(null, "Vuoi acquistare il biglietto? ", "Conferma", JOptionPane.YES_NO_OPTION);
                 if(conferma != JOptionPane.YES_OPTION){
                     JOptionPane.showMessageDialog(null, "Acquisto annullato", "Informazione", JOptionPane.INFORMATION_MESSAGE);
-                    return;
+
                 }else {
                     try {
-                        controllerGestioneAcquisto.acquistaBiglietto(utenteLoggato,evento);
+
+                        ControllerGestioneAcquisto.getInstance().processaAcquisto(mailUtente, evento);
                         JOptionPane.showMessageDialog(null, "Acquisto effettuato!");
                     }catch (TicketException | PaymentException exT){
                         JOptionPane.showMessageDialog(null, exT.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
@@ -226,6 +242,41 @@ public class GUIAcquisto extends JFrame{
             }
         });
     }
+
+
+
+
+//    private void handleAcquista(){
+//        bottoneAcquista.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//
+//                Evento evento = (Evento) comboEventi.getSelectedItem();
+//                assert evento != null;
+//                try{
+//                    controllerGestioneAcquisto.verificaDisponibilita(evento);
+//                    //int conferma = JOptionPane.showConfirmDialog(null, "Vuoi acquistare il biglietto per " + evento.getTitolo() + "?", "Conferma", JOptionPane.YES_NO_OPTION);
+//                } catch (TicketException ex) {
+//                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+//                    return;
+//                }
+//                int conferma = JOptionPane.showConfirmDialog(null, "Vuoi acquistare il biglietto per " + evento.getTitolo() + "?", "Conferma", JOptionPane.YES_NO_OPTION);
+//                if(conferma != JOptionPane.YES_OPTION){
+//                    JOptionPane.showMessageDialog(null, "Acquisto annullato", "Informazione", JOptionPane.INFORMATION_MESSAGE);
+//                    return;
+//                }else {
+//                    try {
+//                        controllerGestioneAcquisto.acquistaBiglietto(utenteLoggato,evento);
+//                        JOptionPane.showMessageDialog(null, "Acquisto effettuato!");
+//                    }catch (TicketException | PaymentException exT){
+//                        JOptionPane.showMessageDialog(null, exT.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+//                    }
+//                }
+//
+//
+//            }
+//        });
+//    }
 
     public static void main(String[] args) {
 

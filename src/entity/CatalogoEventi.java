@@ -11,7 +11,7 @@ public class CatalogoEventi {
     private static CatalogoEventi instance;
     private List<Evento> listaEventi;
 
-    private static EventoDAO eventoDAO = new EventoDAO();
+    private static final EventoDAO eventoDAO = new EventoDAO();
 
     private CatalogoEventi(){
         listaEventi = new ArrayList<>();
@@ -26,7 +26,6 @@ public class CatalogoEventi {
 
 
     public void aggiungiEvento(Evento e){
-
         listaEventi.add(e);
     }
 

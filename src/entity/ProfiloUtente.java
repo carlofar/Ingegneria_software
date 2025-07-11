@@ -9,6 +9,9 @@ import java.util.ArrayList;
 
 public class ProfiloUtente {
 
+
+
+
     public enum Ruolo{
         AMMINISTRATORE,
         UTENTE,
@@ -38,6 +41,34 @@ public class ProfiloUtente {
         this.immagine = null;
     }
 
+    public ProfiloUtente() {
+        this.nome = null;
+        this.cognome = null;
+        this.email = null;
+        this.password = null;
+        this.biglietti = new ArrayList<>();
+        this.ruolo = null;
+        this.immagine = null;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+    public void setCognome(String cognome) {
+        this.cognome = cognome;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setRuolo(String ruolo) {
+        this.ruolo = Ruolo.valueOf(ruolo);
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
     public String getNome() {
         return nome;
     }
@@ -74,7 +105,7 @@ public class ProfiloUtente {
         biglietti.add(b);
     }
 
-    public int calcolaNumEventiPartecipanti(){
+    public int calcolaNumEventiPartecipati(){
         if(biglietti.isEmpty()){
             biglietti = bigliettoDAO.getStoricoBiglietti(this);
         }
