@@ -22,7 +22,7 @@ public class Evento {
     private int maxPartecipanti;
     private int numPartecipantiAttuali = 0;
     private float costo;
-    private List<Biglietto> listaBiglietti;
+    private List<Biglietto> listaBiglietti = new java.util.ArrayList<>();
 
     //Costruttore
     public Evento(){
@@ -37,7 +37,7 @@ public class Evento {
 
 
     public Evento(String titolo, String descrizione, LocalDate data, String oraInizio, String luogo, float costo, int maxPartecipanti) {
-
+        this.id = "EV-" + UUID.randomUUID().toString().substring(0,3) + "-" + LocalDateTime.now().hashCode();
         this.titolo = titolo;
         this.descrizione = descrizione;
         this.data = data;

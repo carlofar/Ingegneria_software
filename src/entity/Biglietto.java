@@ -82,7 +82,7 @@ public class  Biglietto {
 
     }
 
-    public boolean verifificaAccesso(Evento e)throws AccessDeniedException{
+    public boolean verificaAccesso(Evento e)throws AccessDeniedException{
 
 
 //        LocalDate localDate = LocalDate.now();

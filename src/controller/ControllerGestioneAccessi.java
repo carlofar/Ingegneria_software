@@ -41,7 +41,7 @@ public class ControllerGestioneAccessi {
         }
 
 
-        if (bigliettoTrovato.verifificaAccesso(e)){
+        if (bigliettoTrovato.verificaAccesso(e)){
             bigliettoTrovato.marcaComeConsumato();
             e.aggiungiPartecipante();
             e.aggiornaEntrataDAO();

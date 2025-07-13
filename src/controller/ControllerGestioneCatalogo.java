@@ -21,7 +21,7 @@ public class ControllerGestioneCatalogo {
     }
 
 
-    public List<Evento> getEventi(){
+    private List<Evento> getEventi(){
         return CatalogoEventi.getInstance().getEventiAcquistabili();
     }
 
@@ -30,15 +30,15 @@ public class ControllerGestioneCatalogo {
 //    }
 
 
-    public List<Evento> getEventiOdierni(){
+    private List<Evento> getEventiOdierni(){
         return CatalogoEventi.getInstance().getEventiOdierni();
     }
 
-    public List<Evento> filtraEventiPerData(LocalDate data) {
+    private List<Evento> filtraEventiPerData(LocalDate data) {
         return CatalogoEventi.getInstance().filtraPerData(data);
     }
 
-    public List<Evento> filtraEventiPerLuogo(String luogo) {
+    private List<Evento> filtraEventiPerLuogo(String luogo) {
         return CatalogoEventi.getInstance().filtraPerLuogo(luogo);
     }
 
