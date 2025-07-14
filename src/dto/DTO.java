@@ -50,14 +50,7 @@ public class DTO {
 
     @Override
     public String toString() {
-//        String ret = "[ ";
-//        if (dimensione == 0)
-//        {
-//            for (int i = 0; i < dimensione; i++) {
-//                ret += "campo" + (i + 1) + " = " + listaCampi.get(i) + ", ";
-//            }
-//        }
-//        ret += " ]";
+
         String rv = "";
         return switch (tipoDTO) {
             case "evento" ->

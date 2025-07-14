@@ -5,11 +5,13 @@ import controller.ControllerGestioneAccessi;
 import controller.ControllerGestioneAutenticazione;
 import controller.ControllerGestioneCatalogo;
 import dto.DTO;
+import utilities.Validation;
 
 import javax.naming.AuthenticationException;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.AccessDeniedException;
 import java.security.MessageDigest;
 import java.util.List;
@@ -33,7 +35,7 @@ public class GUIGestioneAccessi extends JFrame{
     private JButton accediButton;
     private JLabel fieldEMail;
     private JLabel fieldPw;
-
+    private static final String ERROR_MESSAGE = "Errore";
 
     public GUIGestioneAccessi(){
         initMainPanel();
@@ -54,7 +56,7 @@ public class GUIGestioneAccessi extends JFrame{
                 String passwordHash;
                 try {
                     passwordHash = hashPassword(passwordChars);
-                } catch (Exception ex) {
+                } catch (Exception _) {
                     JOptionPane.showMessageDialog(null, "Errore nella codifica della password.");
                     return;
                 }
@@ -68,7 +70,7 @@ public class GUIGestioneAccessi extends JFrame{
 //                    frame.dispose();
                     //NON SI SPEGNE IL SISTEMA!
                 }catch (AuthenticationException exA){
-                    JOptionPane.showMessageDialog(null, exA.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, exA.getMessage(), ERROR_MESSAGE, JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -99,19 +101,17 @@ public class GUIGestioneAccessi extends JFrame{
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 DTO evento = (DTO) comboEventi.getSelectedItem();
                 String codiceInserito = JOptionPane.showInputDialog(null, "Inserisci il codice biglietto da verificare","Biglietto da verificare",JOptionPane.QUESTION_MESSAGE);
-                if(codiceInserito != null) {
+
+                if(Validation.isValidCodiceBiglietto(codiceInserito)) {
                     try {
                         assert evento != null;
                         ControllerGestioneAccessi.getInstance().effettuaAccesso(codiceInserito, evento, mailUtente);
                         JOptionPane.showMessageDialog(null,"Accesso effettuato con successo!", "Informazione", JOptionPane.INFORMATION_MESSAGE);
                     }catch (AccessDeniedException exA){
-                        JOptionPane.showMessageDialog(null, exA.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, exA.getMessage(), ERROR_MESSAGE, JOptionPane.ERROR_MESSAGE);
                     }
                 }else{
-                    JOptionPane.showMessageDialog(null, "Inserire un codice biglietto valido!", "Errore", JOptionPane.ERROR_MESSAGE);
-                    verificaBigliettoButton.requestFocus();
-                    verificaBigliettoButton.requestFocusInWindow();
-                    verificaBigliettoButton.doClick();
+                    JOptionPane.showMessageDialog(null, "Inserire un codice biglietto valido!", ERROR_MESSAGE, JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -143,7 +143,7 @@ public class GUIGestioneAccessi extends JFrame{
 
     private String hashPassword(char[] password) throws Exception {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
-        byte[] passwordBytes = new String(password).getBytes("UTF-8");
+        byte[] passwordBytes = new String(password).getBytes(StandardCharsets.UTF_8);
         byte[] hashBytes = md.digest(passwordBytes);
 
         StringBuilder sb = new StringBuilder();

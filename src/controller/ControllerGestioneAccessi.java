@@ -34,8 +34,6 @@ public class ControllerGestioneAccessi {
             throw new AccessDeniedException("Il codice non è associato all'evento selezionato");
         }
 
-        //System.out.println("Biglietto trovato " + bigliettoTrovato.toString());
-
         if(!bigliettoTrovato.infoProprietario().equals(p)){
             throw new AccessDeniedException("Il biglietto non è associato al profilo selezionato");
         }
@@ -44,19 +42,10 @@ public class ControllerGestioneAccessi {
         if (bigliettoTrovato.verificaAccesso(e)){
             bigliettoTrovato.marcaComeConsumato();
             e.aggiungiPartecipante();
-            e.aggiornaEntrataDAO();
         }
 
     }
 
-//
-//    public String visualizzaInformazioniEvento(Evento e){
-//        LocalDate data = e.getData();
-//        //LocalDate data = ((java.sql.Date) e.getData()).toLocalDate();
-//        return "Titolo: " + e.getTitolo() + "Data: " + data.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) + ", " + e.getOraInizio();
-//
-//
-//    }
 
 
 }

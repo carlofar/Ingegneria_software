@@ -6,7 +6,6 @@ import entity.Evento;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class ControllerGestioneCatalogo {
@@ -25,9 +24,7 @@ public class ControllerGestioneCatalogo {
         return CatalogoEventi.getInstance().getEventiAcquistabili();
     }
 
-//    public Evento getEvento(String id){
-//        return CatalogoEventi.getInstance().getEvento(id);
-//    }
+
 
 
     private List<Evento> getEventiOdierni(){
@@ -42,21 +39,6 @@ public class ControllerGestioneCatalogo {
         return CatalogoEventi.getInstance().filtraPerLuogo(luogo);
     }
 
-
-//    public List<DTO> getEventiDTO() {
-//        List<Evento> eventi = this.getEventi(); // usa il metodo esistente
-//        List<DTO> eventiDTO = new ArrayList<>();
-//        for (Evento evento : eventi) {
-//            DTO dto = new DTO(
-//                    evento.getTitolo(),
-//                    evento.getData().toString(),
-//                    evento.getLuogo(),
-//                    String.valueOf(evento.getCosto())
-//            );
-//            eventiDTO.add(dto);
-//        }
-//        return eventiDTO;
-//    }
 
     public List<DTO> getEventiDTO() {
         return toDTOList(getEventi());
@@ -79,8 +61,7 @@ public class ControllerGestioneCatalogo {
                         e.getOraInizio(),
                         e.getLuogo(),
                         String.valueOf(e.getCosto())
-                ))
-                .collect(Collectors.toList());
+                )).toList();
     }
 
     public List<DTO> getEventiOdierniDTO() {

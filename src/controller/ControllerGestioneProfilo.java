@@ -9,6 +9,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+
 import com.lowagie.text.Document;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
@@ -19,7 +21,6 @@ public class ControllerGestioneProfilo {
 
     private static ControllerGestioneProfilo instance;
     private ControllerGestioneProfilo(){
-        utenteLoggato = null;
     }
 
 
@@ -31,7 +32,7 @@ public class ControllerGestioneProfilo {
         return instance;
     }
 
-    public void setUtenteLoggato(ProfiloUtente utente) {
+    public static void setUtenteLoggato(ProfiloUtente utente) {
         utenteLoggato = utente;
     }
 
@@ -72,12 +73,6 @@ public class ControllerGestioneProfilo {
     }
 
 
-//    public void mostraDati(ProfiloUtente p, List<Biglietto> biglietti){
-//        System.out.println(p.toString());
-//        for (Biglietto biglietto : biglietti) {
-//            System.out.println(biglietto.toString());
-//        }
-//    }
 
     public String trovaImmagineProfilo()throws ProfileException{
 
@@ -95,20 +90,13 @@ public class ControllerGestioneProfilo {
             document.open();
             document.add(new Paragraph(bigliettoDTO.toString()));
             document.close();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+        } catch (FileNotFoundException _) {
+            Logger logger = Logger.getLogger(ControllerGestioneProfilo.class.getName());
+            logger.severe("Errore durante la scrittura del file PDF");
         }
     }
 
 
-//    public String toStringBiglietto(Biglietto b){
-//        String str = b.toString();
-//        int start = str.indexOf("Biglietto->") + "Biglietto->".length();
-//        int end = str.indexOf("Evento",start);
-//        String toStringBiglietto = str.substring(start,end);
-//        return toStringBiglietto + " nome evento: " + b.infoEvento().getTitolo();
-//
-//    }
 
     public void setImmagineProfilo(String immagine){
         utenteLoggato.aggiornaImmagine(immagine);

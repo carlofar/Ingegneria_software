@@ -85,10 +85,8 @@ public class  Biglietto {
     public boolean verificaAccesso(Evento e)throws AccessDeniedException{
 
 
-//        LocalDate localDate = LocalDate.now();
-//        java.util.Date data = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-        //System.out.println("Stato: " + this.stato.equals(Stato.VALIDO) + " Evento: " + this.evento.equals(e) + " Data: " + this.evento.getData().equals(data)) ;
+
 
         if (!this.stato.equals(Stato.VALIDO)){
             throw new AccessDeniedException("Il biglietto è stato già consumato");
@@ -110,6 +108,11 @@ public class  Biglietto {
 
     public void salvaBigliettoDAO() throws TicketException {
         bigliettoDAO.salvaBiglietto(this);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codice);
     }
 
     @Override

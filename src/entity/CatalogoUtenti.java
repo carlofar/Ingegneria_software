@@ -29,7 +29,7 @@ public class CatalogoUtenti {
 
     public void aggiungiProfilo(ProfiloUtente p){
         listaUtenti.add(p);
-        utenteDAO.SalvaUtente(p);
+        utenteDAO.salvaUtente(p);
     }
 
 

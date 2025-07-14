@@ -35,25 +35,26 @@ public class ControllerGestioneAcquisto {
         }
     }
 
+    public void verificaDisponibilita(DTO eventoDTO)throws TicketException{
+        Evento evento = getEventoFromDTO(eventoDTO);
+        verificaDisponibilita(evento);
+    }
+
 
     private void acquistaBiglietto(ProfiloUtente p,Evento e)throws PaymentException, TicketException {
 
-        if (sistemaPOS.autorizzaPagamento(p,e.getCosto())){
+        if (!p.trovaBiglietto(e)) {
+
+            throw new TicketException("Per quest'evento hai già acquistato un biglietto");
             //CONTROLLO:
             //L'EVENTO SELEZIONATO NON PUO' ESSERE ACQUISTATO DALL'UTENTE SE GIA' LO HA FATTO
             //RICERCARE EVENTUALI BIGLIETTI ACQUISTATI PER QUELL'EVENTO
-            if (!p.trovaBiglietto(e)){
-                Biglietto b = generaBiglietto(p,e);
-                //DA VEDERE
-                //System.out.println("Biglietto generato: " + b.toString() + b.infoProprietario().toString());
-                p.aggiungiBiglietto(b);
-                b.salvaBigliettoDAO();
-                e.aggiungiBiglietto(b);
-                System.out.println("BigliettoAcquistato");
-            }else{
-                throw new TicketException("Per quest'evento hai già acquistato un biglietto");
-                //throw new ExceptionAcquisto("")
-            }
+        }    //
+        if (sistemaPOS.autorizzaPagamento(p,e.getCosto())){
+            Biglietto b = generaBiglietto(p,e);
+            p.aggiungiBiglietto(b);
+            b.salvaBigliettoDAO();
+            e.aggiungiBiglietto(b);
         }
 
     }
@@ -92,22 +93,7 @@ public class ControllerGestioneAcquisto {
             System.out.println("Errore: " + e.getMessage());
             throw new TicketException("Errore nel login");
         }
-        //ProfiloUtente utente = getProfiloFromDTO(utenteDTO);
-        verificaDisponibilita(evento);
         acquistaBiglietto(utente, evento);
 
     }
-
-//    private ProfiloUtente getProfiloFromDTO(DTO dto) {
-//        String nome = dto.getCampoInPos(1);
-//        String cognome = dto.getCampoInPos(2);
-//        String email = dto.getCampoInPos(3);
-//
-//        ProfiloUtente p = new ProfiloUtente();
-//        p.setNome(nome);
-//        p.setCognome(cognome);
-//        p.setEmail(email);
-//
-//        return p;
-//    }
 }

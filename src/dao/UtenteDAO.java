@@ -6,10 +6,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 
 public class UtenteDAO {
 
+
+    private static final String ERROR_MESSAGE = "Errore nella query";
 
     public ProfiloUtente trovaUtenteByEmail(String eMail){
         //Obiettivo: recuperare un ProfiloUtente dal DB dato il suo indirizzo eMail
@@ -47,8 +50,9 @@ public class UtenteDAO {
             }
             //Poichè rs.next() puo lanciare un'eccezione, andiamo a catcharla
             //Si potrebbe fare di meglio
-        } catch (SQLException e) {
-            System.err.println("Errore nella query");
+        } catch (SQLException _) {
+            Logger logger = Logger.getLogger(BigliettoDAO.class.getName());
+            logger.severe(ERROR_MESSAGE);
         }
         return null;
 
@@ -61,12 +65,13 @@ public class UtenteDAO {
             stmt.setString(1,utente.trovaImmagineProfilo());
             stmt.setString(2,utente.getEmail());
             stmt.executeUpdate();
-        } catch (SQLException e) {
-            System.err.println("Errore nella query");
+        } catch (SQLException _) {
+            Logger logger = Logger.getLogger(BigliettoDAO.class.getName());
+            logger.severe(ERROR_MESSAGE);
         }
     }
 
-    public void SalvaUtente(ProfiloUtente utente){
+    public void salvaUtente(ProfiloUtente utente){
         //Obiettivo: Inserire un nuovo utente nella tabella ProfiloUtente
 
         //pasi da seguire:
@@ -86,8 +91,9 @@ public class UtenteDAO {
                     //4.Eseguo la query
                     stmt.executeUpdate();
                     //TECNICAMENTE MANCA ANCHE IMMAGINE PROFILO, MA POI NE DISCUTIAMO
-        }catch (SQLException e){
-            System.err.println("Errore nella query");
+        }catch (SQLException _){
+            Logger logger = Logger.getLogger(BigliettoDAO.class.getName());
+            logger.severe(ERROR_MESSAGE);
         }
     }
 
@@ -101,8 +107,9 @@ public class UtenteDAO {
             if(rs.next()){
                 return rs.getString("immagineProfilo");
             }
-        }catch (SQLException e){
-            System.err.println("Errore nella query");
+        }catch (SQLException _){
+            Logger logger = Logger.getLogger(BigliettoDAO.class.getName());
+            logger.severe(ERROR_MESSAGE);
         }
         return null;
     }

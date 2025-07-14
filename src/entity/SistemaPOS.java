@@ -2,7 +2,6 @@ package entity;
 
 import utilities.PaymentException;
 
-import java.util.List;
 
 public class SistemaPOS {
 

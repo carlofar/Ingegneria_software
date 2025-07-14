@@ -6,6 +6,7 @@ import dao.EventoDAO;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class Evento {
@@ -48,15 +49,18 @@ public class Evento {
     }
 
     public boolean verificaDisponibilita(){
-        if (listaBiglietti == null){
+        if (listaBiglietti.isEmpty()){
             this.listaBiglietti = eventoDAO.getBigliettiAssociati(this);
         }
+
         return this.listaBiglietti.size() < maxPartecipanti;
     }
 
     public void aggiungiPartecipante(){
 
         this.numPartecipantiAttuali++;
+        this.aggiornaEntrataDAO();
+
     }
 
 
@@ -107,12 +111,7 @@ public class Evento {
         return numPartecipantiAttuali;
     }
 
-//    public List<Biglietto> listaBigliettiAssociati() {
-//        if (listaBiglietti == null){
-//            return eventoDAO.getBigliettiAssociati(this);
-//        }
-//        return listaBiglietti;
-//    }
+
 
     public String getDescrizione() {
         return descrizione;
@@ -150,6 +149,10 @@ public class Evento {
         this.numPartecipantiAttuali = numPartecipantiAttuali;
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(titolo, data, luogo);
+    }
 
     @Override
     public boolean equals(Object o){

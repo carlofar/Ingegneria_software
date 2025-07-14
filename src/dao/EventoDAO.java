@@ -7,6 +7,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /*
 titolo varchar(40)
@@ -26,7 +27,7 @@ numPartecipantiAttuali int
 
 public class EventoDAO{
 
-
+    private static final String ERROR_MESSAGE = "Errore nella query";
 
 
 
@@ -57,8 +58,9 @@ public class EventoDAO{
 
                 }
 
-        }catch (SQLException e){
-            System.err.println("Errore nella query");
+        }catch (SQLException _){
+            Logger logger = Logger.getLogger(BigliettoDAO.class.getName());
+            logger.severe(ERROR_MESSAGE);
         }
 
         return eventi;
@@ -85,8 +87,9 @@ public class EventoDAO{
             stmt.executeUpdate();
 
 
-        }catch (SQLException e){
-            System.err.println("Errore nella query");
+        }catch (SQLException _){
+            Logger logger = Logger.getLogger(BigliettoDAO.class.getName());
+            logger.severe(ERROR_MESSAGE);
         }
     }
 
@@ -102,14 +105,15 @@ public class EventoDAO{
 
             stmt.executeUpdate();
 
-        }catch(SQLException e){
-            System.err.println("Errore nella query");
+        }catch(SQLException _){
+            Logger logger = Logger.getLogger(BigliettoDAO.class.getName());
+            logger.severe(ERROR_MESSAGE);
         }
 
     }
 
     
-//    public List<Evento> filtraPerData(LocalDate data){
+//  public List<Evento> filtraPerData(LocalDate data){
 //        List<Evento> eventi = new ArrayList<>();
 //        Date dataSQL = Date.valueOf(data);
 //        String query = "SELECT * FROM EVENTO WHERE data = ?";
@@ -190,8 +194,9 @@ public class EventoDAO{
                 biglietti.add(b);
             }
 
-        } catch (SQLException e) {
-            System.err.println("Errore nella query");
+        } catch (SQLException _) {
+            Logger logger = Logger.getLogger(BigliettoDAO.class.getName());
+            logger.severe(ERROR_MESSAGE);
         }
 
         return biglietti;

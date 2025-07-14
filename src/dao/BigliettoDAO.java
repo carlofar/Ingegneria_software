@@ -13,10 +13,13 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+
 
 
 public class BigliettoDAO {
 
+    private static final String ERROR_MESSAGE = "Errore nella query";
 
     public Biglietto trovaBigliettoByCodice(String codice){
         Biglietto b = null;
@@ -51,8 +54,9 @@ public class BigliettoDAO {
                 b.setEvento(e);
             }
 
-        }catch (SQLException e){
-            System.err.println("Errore nella query");
+        }catch (SQLException _){
+            Logger logger = Logger.getLogger(BigliettoDAO.class.getName());
+            logger.severe(ERROR_MESSAGE);
         }
         return b;
     }
@@ -88,8 +92,9 @@ public class BigliettoDAO {
             }
 
         }
-        catch (SQLException e){
-            System.err.println("Errore nella query");
+        catch (SQLException _){
+            Logger logger = Logger.getLogger(BigliettoDAO.class.getName());
+            logger.severe(ERROR_MESSAGE);
         }
         return biglietti;
     }
@@ -110,9 +115,8 @@ public class BigliettoDAO {
 
             stmt.executeUpdate();
 
-        }catch (SQLException e){
+        }catch (SQLException _){
             throw new TicketException("Errore nel salvataggio del biglietto");
-            //e.printStackTrace();
         }
 
 
@@ -134,10 +138,9 @@ public class BigliettoDAO {
             }
 
         }
-        catch(SQLException e) {
-            System.err.println("Errore nella query");
-
-
+        catch(SQLException _) {
+            Logger logger = Logger.getLogger(BigliettoDAO.class.getName());
+            logger.severe(ERROR_MESSAGE);
         }
         return null;
     }
@@ -153,8 +156,9 @@ public class BigliettoDAO {
             stmt.setString(2, b.getCodice());
             stmt.executeUpdate();
         }
-        catch(SQLException e) {
-            System.err.println("Errore nella query");
+        catch(SQLException _) {
+            Logger logger = Logger.getLogger(BigliettoDAO.class.getName());
+            logger.severe(ERROR_MESSAGE);
         }
 
     }
@@ -169,8 +173,9 @@ public class BigliettoDAO {
             stmt.setString(2, biglietto.getCodice());
             stmt.executeUpdate();
         }
-        catch(SQLException e) {
-            System.err.println("Errore nella query");
+        catch(SQLException _) {
+            Logger logger = Logger.getLogger(BigliettoDAO.class.getName());
+            logger.severe(ERROR_MESSAGE);
         }
 
     }

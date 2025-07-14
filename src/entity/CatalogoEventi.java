@@ -27,6 +27,7 @@ public class CatalogoEventi {
 
     public void aggiungiEvento(Evento e){
         listaEventi.add(e);
+        eventoDAO.salvaEvento(e);
     }
 
 
@@ -38,7 +39,6 @@ public class CatalogoEventi {
 
         if ( listaEventi.isEmpty()){
             listaEventi = eventoDAO.getEventi();
-            //return listaEventi;
         }
         LocalDate dataOdierna = LocalDate.now();
         List<Evento> eventi = new ArrayList<>();
@@ -69,7 +69,6 @@ public class CatalogoEventi {
 
 
     public List<Evento> filtraPerData(LocalDate data){
-        //List<Evento> eventiOdierni = eventoDAO.getEventi();
         if ( listaEventi.isEmpty()){
             listaEventi = eventoDAO.getEventi();
         }

@@ -5,6 +5,7 @@ import dao.UtenteDAO;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class ProfiloUtente {
@@ -141,8 +142,6 @@ public class ProfiloUtente {
         }
 
         for(Biglietto biglietto : biglietti){
-            System.out.println(biglietto.infoEvento().getId());
-            System.out.println(e.getId());
             if(biglietto.infoEvento().getId().equals(e.getId())){
                 return true;
             }
@@ -150,6 +149,10 @@ public class ProfiloUtente {
         return false;
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(email);
+    }
 
     @Override
     public boolean equals(Object o){

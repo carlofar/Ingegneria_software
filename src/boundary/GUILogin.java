@@ -5,20 +5,18 @@ import controller.ControllerGestioneProfilo;
 import dto.DTO;
 import utilities.ProfileException;
 import utilities.RegistrationException;
+import utilities.Validation;
 
 import javax.naming.AuthenticationException;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.List;
 
 public class GUILogin extends JFrame {
-//    private static final ControllerGestioneAutenticazione controllerGestioneAutenticazione = new ControllerGestioneAutenticazione();
-//    private static final ControllerGestioneProfilo controllerGestioneProfilo = new ControllerGestioneProfilo();
-//    private static final ControllerGestioneCatalogo controllerGestioneCatalogo = new ControllerGestioneCatalogo();
 
-    //private ProfiloUtente utenteLoggato;
     private JPanel mainPanel;
     private JPanel tabLogin;
     private JPanel tabSignIn;
@@ -58,6 +56,8 @@ public class GUILogin extends JFrame {
     private JComboBox<DTO> comboBiglietti;
     private JButton scaricaButton;
     private JButton aggiungiCambiaImmagineButton;
+    private static final String ERRORE = "Errore";
+
 
     public GUILogin() {
         initMainPanel();
@@ -75,10 +75,12 @@ public class GUILogin extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String email = campoMailAcc.getText();
                 char[] passwordChars = campoPwAcc.getPassword();
+
                 String passwordHash;
+
                 try {
                     passwordHash = hashPassword(passwordChars);
-                } catch (Exception ex) {
+                } catch (Exception _) {
                     JOptionPane.showMessageDialog(null, "Errore di sicurezza nella codifica della password.");
                     return;
                 }
@@ -87,11 +89,8 @@ public class GUILogin extends JFrame {
                     JOptionPane.showMessageDialog(null, "Login effettuato!");
                     tabLogSign.setVisible(false);
                     initTabProfilo();
-//                    JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(mainPanel);
-//                    frame.dispose();
-                    //NON SI SPEGNE IL SISTEMA!
                 }catch (AuthenticationException exA){
-                    JOptionPane.showMessageDialog(null, exA.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, exA.getMessage(), ERRORE, JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -102,20 +101,28 @@ public class GUILogin extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String eMail = campoMailReg.getText();
+                if(!Validation.isEmailValid(eMail)){
+                    JOptionPane.showMessageDialog(null,"Errore, inserire un indirizzo email valido");
+                    return;
+                }
                 char[] passwordChars = campoPwReg.getPassword();
+                if(!Validation.isValidPassword(passwordChars)){
+                    JOptionPane.showMessageDialog(null,"Errore, inserire una password più sicura");
+                    return;
+                }
                 String passwordHash;
                 try {
                     passwordHash = hashPassword(passwordChars);
-                } catch (Exception ex) {
+                } catch (Exception _) {
                     JOptionPane.showMessageDialog(null, "Errore nella codifica della password.");
                     return;
                 }
                 try {
-                    ControllerGestioneAutenticazione.getInstance().checkCredenzialiRegistrzione(eMail, passwordHash);
+                    ControllerGestioneAutenticazione.getInstance().checkCredenzialiRegistrzione(eMail);
                     tabLogSign.setVisible(false);
                     handleCompletaRegistrazione(eMail, passwordHash);
                 }catch (RegistrationException exR){
-                    JOptionPane.showMessageDialog(null, exR.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, exR.getMessage(), ERRORE, JOptionPane.ERROR_MESSAGE);
                 }
 
             }
@@ -137,12 +144,17 @@ public class GUILogin extends JFrame {
                     JOptionPane.showMessageDialog(null, "Inserire i campi nome e cognome!");
                     return;
                 }
-                ControllerGestioneAutenticazione.getInstance().RegistraUtente(nome,cognome,eMail,password,immagine);
+                if(!Validation.isValidName(nome) || !Validation.isValidSurname(cognome)){
+                    JOptionPane.showMessageDialog(null, "Il nome e il cognome non possono superare i 35 caratteri!");
+                    return;
+                }
+                if(immagine != null && !Validation.isValidImageExtension(immagine)){
+                    JOptionPane.showMessageDialog(null, "L'immagine deve essere di tipo .jpg .jpeg .png .webp");
+                }
+                ControllerGestioneAutenticazione.getInstance().registraUtente(nome,cognome,eMail,password,immagine);
                 JOptionPane.showMessageDialog(null, "Registrazione effettuata!");
                 panelReg.setVisible(false);
                 initTabProfilo();
-//                JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(mainPanel);
-//                frame.dispose();
             }
         });
     }
@@ -166,10 +178,9 @@ public class GUILogin extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try{
-                    //String eMail = ControllerGestioneAutenticazione.getInstance().getEmailUtente();
                     JOptionPane.showMessageDialog(null, "Immagine profilo:\n" + ControllerGestioneProfilo.getInstance().trovaImmagineProfilo() , "Immagine profilo", JOptionPane.INFORMATION_MESSAGE);
                 }catch (ProfileException exP){
-                    JOptionPane.showMessageDialog(null, exP.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, exP.getMessage(), ERRORE, JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -221,8 +232,6 @@ public class GUILogin extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(null, "Grazie per aver usato TicketOne!");
-//              JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(mainPanel);
-//              frame.dispose();
                 System.exit(0);
             }
         });
@@ -232,13 +241,11 @@ public class GUILogin extends JFrame {
     private void mostraStoricoBiglietti(){
         List<DTO> biglietti = ControllerGestioneProfilo.getInstance().getStoricoBigliettiDTO();
         listaBiglietti.setText("");
-        //listaBiglietti.append("Biglietti acquistati:\n");
         for (DTO biglietto : biglietti) {
             listaBiglietti.append(biglietto.toString() + "\n");
         }
 
         scaricaBiglietto(biglietti);
-        //handleFiltraPerData();
     }
 
 
@@ -289,7 +296,7 @@ public class GUILogin extends JFrame {
 
     private String hashPassword(char[] password) throws Exception {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
-        byte[] passwordBytes = new String(password).getBytes("UTF-8");
+        byte[] passwordBytes = new String(password).getBytes(StandardCharsets.UTF_8);
         byte[] hashBytes = md.digest(passwordBytes);
 
         StringBuilder sb = new StringBuilder();

@@ -16,6 +16,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.time.LocalDate;
 import java.util.List;
@@ -43,6 +44,9 @@ public class GUIAcquisto extends JFrame{
     private JTextField dataTextField;
     private JTextField localitaTextField;
 
+    private static final String ERROR_MESSAGE = "Errore";
+
+
     public GUIAcquisto() {
         handleLogin();
 
@@ -64,7 +68,7 @@ public class GUIAcquisto extends JFrame{
                 String passwordHash;
                 try {
                     passwordHash = hashPassword(passwordChars);
-                } catch (Exception ex) {
+                } catch (Exception _) {
                     JOptionPane.showMessageDialog(null, "Errore nella codifica della password.");
                     return;
                 }
@@ -76,7 +80,7 @@ public class GUIAcquisto extends JFrame{
                     JOptionPane.showMessageDialog(null, "Login effettuato");
                     loginPanel.setVisible(false);
                 }catch (AuthenticationException authEx){
-                    JOptionPane.showMessageDialog(null, authEx.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, authEx.getMessage(), ERROR_MESSAGE, JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -170,7 +174,7 @@ public class GUIAcquisto extends JFrame{
                         }
 
 
-                    } catch (Exception ex) {
+                    } catch (Exception _) {
                         JOptionPane.showMessageDialog(null, "Data non valida.");
                     }
                 }
@@ -225,7 +229,18 @@ public class GUIAcquisto extends JFrame{
 
                 DTO evento = (DTO) comboEventi.getSelectedItem();
                 if(evento == null){ return;}
-
+                try {
+                    ControllerGestioneAcquisto.getInstance().verificaDisponibilita(evento);
+                    int conferma = JOptionPane.showConfirmDialog(null, "Vuoi acquistare il biglietto? ", "Conferma", JOptionPane.YES_NO_OPTION);
+                    if(conferma != JOptionPane.YES_OPTION){
+                        JOptionPane.showMessageDialog(null, "Acquisto annullato", "Informazione", JOptionPane.INFORMATION_MESSAGE);
+                    }else {
+                        ControllerGestioneAcquisto.getInstance().processaAcquisto(mailUtente, evento);
+                        JOptionPane.showMessageDialog(null, "Acquisto effettuato!");
+                    }
+                }catch(TicketException | PaymentException exT){
+                    JOptionPane.showMessageDialog(null, exT.getMessage(), ERROR_MESSAGE, JOptionPane.ERROR_MESSAGE);
+                }
 //                try{
 //                    ControllerGestioneAcquisto.getInstance().getEventoFromDTO(evento);
 //                    //int conferma = JOptionPane.showConfirmDialog(null, "Vuoi acquistare il biglietto per " + evento.getTitolo() + "?", "Conferma", JOptionPane.YES_NO_OPTION);
@@ -233,19 +248,7 @@ public class GUIAcquisto extends JFrame{
 //                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
 //                    return;
 //                }
-                int conferma = JOptionPane.showConfirmDialog(null, "Vuoi acquistare il biglietto? ", "Conferma", JOptionPane.YES_NO_OPTION);
-                if(conferma != JOptionPane.YES_OPTION){
-                    JOptionPane.showMessageDialog(null, "Acquisto annullato", "Informazione", JOptionPane.INFORMATION_MESSAGE);
 
-                }else {
-                    try {
-
-                        ControllerGestioneAcquisto.getInstance().processaAcquisto(mailUtente, evento);
-                        JOptionPane.showMessageDialog(null, "Acquisto effettuato!");
-                    }catch (TicketException | PaymentException exT){
-                        JOptionPane.showMessageDialog(null, exT.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
 
 
             }
@@ -305,7 +308,7 @@ public class GUIAcquisto extends JFrame{
 
     private String hashPassword(char[] password) throws Exception {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
-        byte[] passwordBytes = new String(password).getBytes("UTF-8");
+        byte[] passwordBytes = new String(password).getBytes(StandardCharsets.UTF_8);
         byte[] hashBytes = md.digest(passwordBytes);
 
         StringBuilder sb = new StringBuilder();
