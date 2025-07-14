@@ -19,7 +19,6 @@ public class ControllerGestioneAccessi {
 
 
     public void effettuaAccesso (String codice, DTO evento, String mailUtente) throws AccessDeniedException {
-        //CHECK VALIDAZIONE INPUT
         ProfiloUtente p = null;
         try {
             p = CatalogoUtenti.getInstance().trovaUtenteByEmail(mailUtente);

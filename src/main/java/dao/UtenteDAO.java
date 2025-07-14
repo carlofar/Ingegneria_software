@@ -12,6 +12,8 @@ import java.util.logging.Logger;
 public class UtenteDAO {
 
 
+    //DELETE * FROM [NOMETABELLA] WHERE [CONDIZIONE]
+    //"DELETE * FROM PROFILOUTENTE WHERE eMail = ?"
     private static final String ERROR_MESSAGE = "Errore nella query";
 
     public ProfiloUtente trovaUtenteByEmail(String eMail){

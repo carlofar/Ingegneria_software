@@ -52,4 +52,9 @@ public class CatalogoUtenti {
             throw new RegistrationException("La Email è già presente nel sistema");
         }
     }
+
+
+    public void reset() {
+        this.listaUtenti.clear();
+    }
 }

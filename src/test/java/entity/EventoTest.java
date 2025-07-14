@@ -1,6 +1,7 @@
 package entity;
 
 import org.junit.*;
+import utilities.TicketException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -12,8 +13,8 @@ public class EventoTest {
 
     private List<Biglietto> listaBiglietti = new ArrayList<>(); // ci serve per test
     LocalDate data= LocalDate.of(2025, 6, 15); // data di esempio per i test
-    Evento eventoProvaLocal = new Evento();
-    private Evento eventoProva=new Evento("Caparezza","concerto",data,"21:00","Ex base nato",50.00F,50000); // dichiaro private per usarlo solo qui dentr
+    private Evento eventoProvaLocal = new Evento();
+    private Evento eventoProva = new Evento("Caparezza","concerto",data,"21:00","Ex base nato",50.00F,50000);// dichiaro private per usarlo solo qui dentr
     ProfiloUtente profilo = new ProfiloUtente("Genny", "De Rosa", "genny.derosa03@gmail.com", "Genny@23", ProfiloUtente.Ruolo.UTENTE);
 
 
@@ -211,8 +212,15 @@ public class EventoTest {
 
     @Test
     public void trovaBiglietto() {
-        eventoProva.aggiungiBiglietto(biglietto);
-        assertEquals(biglietto, eventoProva.trovaBiglietto(biglietto.getCodice()));
+        eventoProva.setId("EVENTOPROVA-1-1-1");
+        try{
+            biglietto.salvaBigliettoDAO();
+            assertEquals(biglietto, eventoProva.trovaBiglietto(biglietto.getCodice()));
+        } catch (TicketException exception){
+            fail("Il biglietto è già stato salvato " + exception.getMessage() );
+        }
+
+
     }
 
 /*
