@@ -9,9 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-//1. REGISTRAZIONE/AUTENTICAZIONE => GUIAUTH -> 2.MOSTRA CATALOGOEVENTI => GUIHOME |||
-//3.ACQUISTO => GUIACQUISTO
-//4.ACCESSO => GUIGESTIONEACCESSI
+
 
 public class ControllerGestioneAcquisto {
 

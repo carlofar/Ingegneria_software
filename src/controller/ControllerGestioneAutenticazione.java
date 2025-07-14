@@ -9,7 +9,6 @@ import javax.naming.AuthenticationException;
 
 public class ControllerGestioneAutenticazione {
 
-    //Tale controller è fatto solo per far "funzionare" il sistema
     private static ControllerGestioneAutenticazione instance;
     private ProfiloUtente utenteLoggato;
 

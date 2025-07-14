@@ -76,6 +76,7 @@ public class GUILogin extends JFrame {
                 String email = campoMailAcc.getText();
                 char[] passwordChars = campoPwAcc.getPassword();
 
+
                 String passwordHash;
 
                 try {
