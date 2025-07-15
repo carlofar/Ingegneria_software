@@ -151,6 +151,7 @@ public class GUILogin extends JFrame {
                 }
                 if(immagine != null && !Validation.isValidImageExtension(immagine)){
                     JOptionPane.showMessageDialog(null, "L'immagine deve essere di tipo .jpg .jpeg .png .webp");
+                    return;
                 }
                 ControllerGestioneAutenticazione.getInstance().registraUtente(nome,cognome,eMail,password,immagine);
                 JOptionPane.showMessageDialog(null, "Registrazione effettuata!");
