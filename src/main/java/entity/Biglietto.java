@@ -110,6 +110,10 @@ public class  Biglietto {
         bigliettoDAO.salvaBiglietto(this);
     }
 
+    public void cancellaBigliettoDAO() {
+        bigliettoDAO.cancellaBiglietto(this);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(codice);

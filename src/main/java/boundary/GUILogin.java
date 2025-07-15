@@ -283,7 +283,7 @@ public class GUILogin extends JFrame {
         SwingUtilities.invokeLater(() -> {
 
             GUILogin guiLogin = new GUILogin();
-            guiLogin.setTitle("TicketOne");//NOME DELL'APP ||ABBIAMO CREATO LA SCHERMATA
+            guiLogin.setTitle("Unina Ticket");//NOME DELL'APP ||ABBIAMO CREATO LA SCHERMATA
             guiLogin.setContentPane(new GUILogin().mainPanel); // new [nomeClasse.nomePanel] SERVE PER BINDARE LA SCHERMATA CON IL PANEL CREATO
             guiLogin.setDefaultCloseOperation(EXIT_ON_CLOSE);//METODO DI CHIUSURA DEL PANEL CHE CORRISPONDE ALLA CHIUSURA DEL PROGRAMMA
             //guiLogin.pack();//ALL'APERTURA DELLA SCERMATA SETTA LA GRANDEZZA DELL'INTERFACCIA IN MODO DA VEDERE TUTTE LE COSE PRESENTI

@@ -180,4 +180,18 @@ public class BigliettoDAO {
 
     }
 
+    public void cancellaBiglietto(Biglietto b){
+
+        String query = "DELETE FROM Biglietto WHERE codiceIdentificativo = ?";
+        try(Connection conn=ConnectionManager.getInstance().getConn();
+            PreparedStatement stmt=conn.prepareStatement(query)){
+            stmt.setString(1, b.getCodice());
+            stmt.executeUpdate();
+        }
+        catch(SQLException _) {
+            Logger logger = Logger.getLogger(BigliettoDAO.class.getName());
+        }
+
+    }
+
 }

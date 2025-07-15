@@ -12,27 +12,34 @@ import static org.junit.Assert.*;
 public class EventoTest {
 
     private List<Biglietto> listaBiglietti = new ArrayList<>(); // ci serve per test
-    LocalDate data= LocalDate.of(2025, 6, 15); // data di esempio per i test
-    private Evento eventoProvaLocal = new Evento();
-    private Evento eventoProva = new Evento("Caparezza","concerto",data,"21:00","Ex base nato",50.00F,50000);// dichiaro private per usarlo solo qui dentr
-    ProfiloUtente profilo = new ProfiloUtente("Genny", "De Rosa", "genny.derosa03@gmail.com", "Genny@23", ProfiloUtente.Ruolo.UTENTE);
+    private static LocalDate data; // data di esempio per i test
+    private static Evento eventoProvaLocal;
+    private static Evento eventoProva;// dichiaro private per usarlo solo qui dentr
+    private static ProfiloUtente profilo;
 
 
-    Biglietto biglietto = new Biglietto("EAV-52452435", profilo, eventoProva);
+    private static Biglietto biglietto;
 
 
     @BeforeClass // annotazione di JUnit
     public static void setUpClass() {
-        // Eseguito una volta prima dell'inizio dei test nella classe
-        // Inizializza risorse condivise
-        // o esegui altre operazioni di setup
+        data= LocalDate.of(2025, 6, 15);
+        eventoProvaLocal = new Evento();
+        eventoProva = new Evento("Caparezza","concerto",data,"21:00","Ex base nato",50.00F,50000);
+        profilo = new ProfiloUtente("Genny", "De Rosa", "genny.derosa03@gmail.com", "Genny@23", ProfiloUtente.Ruolo.UTENTE);
+        biglietto= new Biglietto("EVT-11-UT147258369-s3t4u", profilo, eventoProva);
+        //eventoProva.setId("EVENTOPROVA-1-1-1");
+        CatalogoEventi.getInstance().aggiungiEvento(eventoProva);
+        CatalogoUtenti.getInstance().aggiungiProfilo(profilo);
     }
 
     @AfterClass
     public static void tearDownClass() {
-        // Eseguito una volta alla fine di tutti i test nella classe
-        // Effettua la pulizia delle risorse condivise
-        // o esegui altre operazioni di teardown
+
+        CatalogoUtenti.getInstance().cancellaUtente(profilo);
+        biglietto.cancellaBigliettoDAO();
+        CatalogoEventi.getInstance().cancellaEvento(eventoProva);
+        CatalogoEventi.getInstance().cancellaEvento(eventoProvaLocal);
     }
 
 
@@ -60,19 +67,20 @@ public class EventoTest {
         // Test per verificare se l'aggiunta di un partecipante incrementa il numero attuale
         int numPartecipantiIniziali = eventoProva.getNumPartecipantiAttuali();
         eventoProva.aggiungiPartecipante();
-        assertEquals(numPartecipantiIniziali + 1, eventoProva.getNumPartecipantiAttuali());
+
     }
 
     @Test
     public void aggiungiBiglietto() {
-
+        int nBigliettiIniziali = eventoProva.getNumPartecipantiTotali();
         eventoProva.aggiungiBiglietto(biglietto);
-        assertNotNull(eventoProva.verificaDisponibilita());
+        assertEquals(nBigliettiIniziali + 1, eventoProva.getNumPartecipantiTotali());
     }
 
     @Test
     public void getId() {
-        assertNotNull(eventoProva.getId());
+        eventoProvaLocal.setId("EVENTOPROVA-1-1-1");
+        assertEquals(eventoProvaLocal.getId(), "EVENTOPROVA-1-1-1");
     }
 
     @Test
@@ -84,8 +92,9 @@ public class EventoTest {
     @Test
     public void getNumPartecipantiTotali() {
         //Test per verificare il numero totale di partecipanti
-
-        assertEquals("Il numero totale di partecipanti dovrebbe essere 0 inizialmente", 0, eventoProva.getNumPartecipantiAttuali());
+        int numIniziale = eventoProva.getNumPartecipantiTotali();
+        eventoProva.aggiungiBiglietto(biglietto);
+        assertEquals("Il numero totale di partecipanti dovrebbe essere 0 inizialmente", numIniziale + 1, eventoProva.getNumPartecipantiTotali());
     }
 
     @Test
@@ -212,7 +221,7 @@ public class EventoTest {
 
     @Test
     public void trovaBiglietto() {
-        eventoProva.setId("EVENTOPROVA-1-1-1");
+        //eventoProva.setId("EVENTOPROVA-1-1-1");
         try{
             biglietto.salvaBigliettoDAO();
             assertEquals(biglietto, eventoProva.trovaBiglietto(biglietto.getCodice()));

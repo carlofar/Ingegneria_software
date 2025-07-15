@@ -295,7 +295,7 @@ public class GUIAcquisto extends JFrame{
         SwingUtilities.invokeLater(() -> {
 
             GUIAcquisto GUI = new GUIAcquisto();
-            GUI.setTitle("TicketOne");//NOME DELL'APP ||ABBIAMO CREATO LA SCHERMATA
+            GUI.setTitle("Unina Ticket");//NOME DELL'APP ||ABBIAMO CREATO LA SCHERMATA
             GUI.setContentPane(new GUIAcquisto().mainPanel); // new [nomeClasse.nomePanel] SERVE PER BINDARE LA SCHERMATA CON IL PANEL CREATO
             GUI.setDefaultCloseOperation(EXIT_ON_CLOSE);//METODO DI CHIUSURA DEL PANEL CHE CORRISPONDE ALLA CHIUSURA DEL PROGRAMMA
             //GUI.pack();//ALL'APERTURA DELLA SCERMATA SETTA LA GRANDEZZA DELL'INTERFACCIA IN MODO DA VEDERE TUTTE LE COSE PRESENTI

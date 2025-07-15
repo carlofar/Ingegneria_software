@@ -112,6 +112,24 @@ public class EventoDAO{
 
     }
 
+    public void cancellaEvento(Evento evento){
+
+        String query = "DELETE FROM EVENTO WHERE idEvento = ?";
+
+        try(Connection conn = ConnectionManager.getInstance().getConn();
+            PreparedStatement stmt = conn.prepareStatement(query)){
+
+            stmt.setString(1, evento.getId());
+
+            stmt.executeUpdate();
+
+        }catch (SQLException _){
+            Logger logger = Logger.getLogger(BigliettoDAO.class.getName());
+            logger.severe(ERROR_MESSAGE);
+        }
+
+    }
+
     
 //  public List<Evento> filtraPerData(LocalDate data){
 //        List<Evento> eventi = new ArrayList<>();

@@ -7,11 +7,19 @@ public class CatalogoEventiTest {
 
 
     private CatalogoEventi catalogoeventiTEST;
-    private Evento eventoProva1 = new Evento("Caparezza", "concerto", LocalDate.of(2025, 6, 15), "21:00", "Ex base nato", 50.00F, 50000);
-    private Evento eventoProva2 = new Evento("Marco Mengoni", "concerto", LocalDate.of(2025, 7, 26), "21:00", "Stadio Maradona", 70.00F, 500000);
-    private Evento eventoOggi= new Evento("Fabri Fibra","concerto",LocalDate.of(2025,07,13),"21:00","Stadio Olimpico",50.00F,50000);
+    private static Evento eventoProva1;
+    private static Evento eventoProva2;
+    private static Evento eventoOggi;
+
+
+
+
     @BeforeClass // annotazione di JUnit
     public static void setUpClass() {
+        eventoProva1 = new Evento("Caparezza", "concerto", LocalDate.of(2025, 6, 15), "21:00", "Ex base nato", 50.00F, 50000);
+        eventoProva2 = new Evento("Marco Mengoni", "concerto", LocalDate.of(2025, 7, 26), "21:00", "Stadio Maradona", 70.00F, 500000);
+        eventoOggi = new Evento("Fabri Fibra","concerto",LocalDate.of(2025,07,13),"21:00","Stadio Olimpico",50.00F,50000);
+        CatalogoEventi.getInstance().aggiungiEvento(eventoOggi);
         // Eseguito una volta prima dell'inizio dei test nella classe
         // Inizializza risorse condivise
         // o esegui altre operazioni di setup
@@ -19,6 +27,9 @@ public class CatalogoEventiTest {
 
     @AfterClass
     public static void tearDownClass() {
+        CatalogoEventi.getInstance().cancellaEvento(eventoProva1);
+        CatalogoEventi.getInstance().cancellaEvento(eventoProva2);
+        CatalogoEventi.getInstance().cancellaEvento(eventoOggi);
         // Eseguito una volta alla fine di tutti i test nella classe
         // Effettua la pulizia delle risorse condivise
         // o esegui altre operazioni di teardown

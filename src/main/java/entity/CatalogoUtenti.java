@@ -32,8 +32,6 @@ public class CatalogoUtenti {
         utenteDAO.salvaUtente(p);
     }
 
-
-
     public List<ProfiloUtente> getListaUtenti(){
 
         return new ArrayList<>(listaUtenti);
@@ -54,7 +52,11 @@ public class CatalogoUtenti {
     }
 
 
-    public void reset() {
+    public void clear() {
         this.listaUtenti.clear();
     }
+    public void cancellaUtente(ProfiloUtente profiloUtente){
+        utenteDAO.cancellaUtente(profiloUtente);
+    }
+
 }

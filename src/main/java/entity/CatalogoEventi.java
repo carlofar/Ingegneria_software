@@ -112,4 +112,11 @@ public class CatalogoEventi {
         return null;
     }
 
+    public void clear() {
+        listaEventi.clear();
+    }
+
+    public void cancellaEvento(Evento evento){
+        eventoDAO.cancellaEvento(evento);
+    }
 }

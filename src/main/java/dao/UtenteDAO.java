@@ -117,6 +117,18 @@ public class UtenteDAO {
     }
 
 
+    public void cancellaUtente(ProfiloUtente utente){
+        String query = "DELETE FROM PROFILOUTENTE WHERE email = ?";
+        try(Connection conn = ConnectionManager.getInstance().getConn();
+            PreparedStatement stmt = conn.prepareStatement(query)){
+            stmt.setString(1, utente.getEmail());
+            stmt.executeUpdate();
+        }catch (SQLException _){
+            Logger logger = Logger.getLogger(BigliettoDAO.class.getName());
+        }
+    }
+
+
 }
 
 

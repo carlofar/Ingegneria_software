@@ -131,7 +131,7 @@ public class GUIGestioneAccessi extends JFrame{
         SwingUtilities.invokeLater(() -> {
 
             GUIGestioneAccessi guiGestioneAccessi = new GUIGestioneAccessi();
-            guiGestioneAccessi.setTitle("TicketOne");//NOME DELL'APP ||ABBIAMO CREATO LA SCHERMATA
+            guiGestioneAccessi.setTitle("Unina Ticket");//NOME DELL'APP ||ABBIAMO CREATO LA SCHERMATA
             guiGestioneAccessi.setContentPane(new GUIGestioneAccessi().mainPanel); // new [nomeClasse.nomePanel] SERVE PER BINDARE LA SCHERMATA CON IL PANEL CREATO
             guiGestioneAccessi.setDefaultCloseOperation(EXIT_ON_CLOSE);//METODO DI CHIUSURA DEL PANEL CHE CORRISPONDE ALLA CHIUSURA DEL PROGRAMMA
             //guiLogin.pack();//ALL'APERTURA DELLA SCERMATA SETTA LA GRANDEZZA DELL'INTERFACCIA IN MODO DA VEDERE TUTTE LE COSE PRESENTI

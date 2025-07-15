@@ -12,32 +12,47 @@ import utilities.TicketException;
 
 public class BigliettoTest {
 
+    private static ProfiloUtente christian;
     private Biglietto bigliettoTB; // TB sta per Test Biglietto
-    ProfiloUtente christian = new ProfiloUtente("Christian", "De Sica", "chrisde@cinepanettoni.it", "VacanzeDiNatal&", ProfiloUtente.Ruolo.UTENTE);
+    //ProfiloUtente christian = new ProfiloUtente("Christian", "De Sica", "chrisde@cinepanettoni.it", "VacanzeDiNatal&", ProfiloUtente.Ruolo.UTENTE);
     Evento MerryChristian = new Evento("Merry Christian", "Show di Natale di Christian De Sica", LocalDate.of(2025, 12, 25), "20:00", "Teatro Augusteo", 25.0f, 1000);
-
     private static final BigliettoDAO bigliettoDAO = new BigliettoDAO();
-    private static final EventoDAO EVENTODAO = new EventoDAO();
+    private static final EventoDAO eventoDAO = new EventoDAO();
 
+
+    @BeforeClass
+    public static void setUpClass() {
+        christian = new ProfiloUtente("Christian", "De Sica", "chrisde@cinepanettoni.it", "VacanzeDiNatal&", ProfiloUtente.Ruolo.UTENTE);
+        CatalogoUtenti.getInstance().aggiungiProfilo(christian);
+    }
+
+    @AfterClass
+    public static void tearDownClass(){
+
+        CatalogoUtenti.getInstance().cancellaUtente(christian);
+
+    }
 
 
     @Before
     public void setUp() throws Exception {
         try {
             MerryChristian.setId("EV-7e3--1295781447");
-            bigliettoTB = new Biglietto("EAV-52452435", christian, MerryChristian);
+            bigliettoTB = new Biglietto("EVT-8-UT963852741-v5w6x", christian, MerryChristian);
         } catch (Exception e) {
             fail("Errore durante l'inizializzazione del biglietto: " + e.getMessage());
         }
     }
     @After
     public void tearDown() throws Exception {
-        bigliettoTB.setStato(Biglietto.Stato.VALIDO); // resetto lo stato del biglietto per i test successivi
+        //bigliettoTB.setStato(Biglietto.Stato.VALIDO);// resetto lo stato del biglietto per i test successivi
+        bigliettoTB.cancellaBigliettoDAO();
     }
 
     @Test
     public void salvaBigliettoDAO() {
         try {
+
             bigliettoTB.salvaBigliettoDAO();
             Biglietto bigliettors = bigliettoDAO.trovaBigliettoByCodice(bigliettoTB.getCodice());
             assertEquals(bigliettors, bigliettoTB);
@@ -49,7 +64,7 @@ public class BigliettoTest {
 
     @Test
     public void getCodice() {
-        assertEquals("EAV-52452435", bigliettoTB.getCodice());
+        assertEquals("EVT-8-UT963852741-v5w6x", bigliettoTB.getCodice());
     }
 
     @Test

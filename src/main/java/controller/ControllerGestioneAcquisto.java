@@ -41,7 +41,7 @@ public class ControllerGestioneAcquisto {
 
     private void acquistaBiglietto(ProfiloUtente p,Evento e)throws PaymentException, TicketException {
 
-        if (!p.trovaBiglietto(e)) {
+        if (p.trovaBiglietto(e)) {
 
             throw new TicketException("Per quest'evento hai già acquistato un biglietto");
             //CONTROLLO:

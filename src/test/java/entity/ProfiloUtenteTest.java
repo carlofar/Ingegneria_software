@@ -10,13 +10,19 @@ import static org.junit.Assert.*;
 public class ProfiloUtenteTest {
     private static final BigliettoDAO bigliettoDAO = new BigliettoDAO();
     private static final EventoDAO eventoDAO = new EventoDAO();
-    ProfiloUtente profiloLocal = new ProfiloUtente();
-    private ProfiloUtente profilo = new ProfiloUtente("Bill", "Gates", "bill@microsoft.com", "micros@ft@fficE0", ProfiloUtente.Ruolo.UTENTE);
-    private ProfiloUtente profiloesistente;
-
+    private static ProfiloUtente profiloLocal;
+    private static ProfiloUtente profilo;
+    private static ProfiloUtente profiloesistente;
+    private static Evento eventoProva1;
+    private static Biglietto bigliettoProva;
 
     @BeforeClass // annotazione di JUnit
     public static void setUpClass() {
+        profiloLocal = new ProfiloUtente();
+        profilo = new ProfiloUtente("Bill", "Gates", "bill@microsoft.com", "micros@ft@fficE0", ProfiloUtente.Ruolo.UTENTE);
+        eventoProva1 = new Evento("EventoTest1","testo evento",LocalDate.of(2025,6,15),"21:00","TeatroTest1",20.0f,500);
+        CatalogoEventi.getInstance().aggiungiEvento(eventoProva1);
+        bigliettoProva = new Biglietto("EAV-12345678", profilo, eventoProva1);
         // Eseguito una volta prima dell'inizio dei test nella classe
         // Inizializza risorse condivise
         // o esegui altre operazioni di setup
@@ -24,6 +30,7 @@ public class ProfiloUtenteTest {
 
     @AfterClass
     public static void tearDownClass() {
+        CatalogoEventi.getInstance().cancellaEvento(eventoProva1);
         // Eseguito una volta alla fine di tutti i test nella classe
         // Effettua la pulizia delle risorse condivise
         // o esegui altre operazioni di teardown
@@ -40,6 +47,7 @@ public class ProfiloUtenteTest {
 
     @After
     public void tearDown() throws Exception {
+        bigliettoProva.setStato(Biglietto.Stato.VALIDO);
     }
 
     @Test
@@ -114,11 +122,11 @@ public class ProfiloUtenteTest {
     @Test
     public void aggiungiBiglietto() {
         // Test per verificare se l'aggiunta di un biglietto funziona correttamente
-        Evento DegustazioneVini = CatalogoEventi.getInstance().getEvento("EV-4-4683019");
-        Biglietto bigliettoProva = new Biglietto("EAV-12345678", profilo, DegustazioneVini);
+
 
         profiloLocal.aggiungiBiglietto(bigliettoProva);
         assertTrue(profiloLocal.listaBigliettiAssociati().contains(bigliettoProva));
+
     }
 
     @Test
@@ -126,11 +134,11 @@ public class ProfiloUtenteTest {
         //BISOGNA METTERE DEVI EVENTI DOVE HA PARTECIPATO L'UTENTE
 
 
-        Biglietto biglietto1 = new Biglietto("BIG-1-123-123", profiloesistente,CatalogoEventi.getInstance().getEvento("MENGONI-1-2-3") );
+        //Biglietto biglietto1 = new Biglietto("BIG-1-123-123", profiloesistente,CatalogoEventi.getInstance().getEvento("MENGONI-1-2-3") );
 
 
-        biglietto1.marcaComeConsumato();
-        profiloesistente.aggiungiBiglietto(biglietto1);
+        bigliettoProva.marcaComeConsumato();
+        profiloesistente.aggiungiBiglietto(bigliettoProva);
 
         assertEquals(1, profiloesistente.calcolaNumEventiPartecipati());
     }
@@ -151,8 +159,8 @@ public class ProfiloUtenteTest {
 
     @Test
     public void trovaBiglietto() {
-        Evento DegustazioneVini = CatalogoEventi.getInstance().getEvento("EV-4-4683019");
-        assertTrue(profiloesistente.trovaBiglietto(DegustazioneVini));
+        profiloesistente.aggiungiBiglietto(bigliettoProva);
+        assertTrue(profiloesistente.trovaBiglietto(eventoProva1));
 
     }
 
